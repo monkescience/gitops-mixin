@@ -190,9 +190,9 @@
           {
             "matcher": { "id": "byName", "options": "Request" },
             "properties": [
-              { "id": "unit", "value": "none" },
+              { "id": "unit", "value": "suffix:m" },
               { "id": "custom.width", "value": 90 },
-              { "id": "decimals", "value": 2 },
+              { "id": "decimals", "value": 0 },
               { "id": "custom.cellOptions", "value": { "type": "color-text" } },
               { "id": "color", "value": { "mode": "fixed", "fixedColor": "text" } }
             ]
@@ -200,25 +200,25 @@
           {
             "matcher": { "id": "byName", "options": "Avg Usage" },
             "properties": [
-              { "id": "unit", "value": "none" },
-              { "id": "custom.width", "value": 90 },
-              { "id": "decimals", "value": 3 }
+              { "id": "unit", "value": "suffix:m" },
+              { "id": "custom.width", "value": 100 },
+              { "id": "decimals", "value": 1 }
             ]
           },
           {
             "matcher": { "id": "byName", "options": "P95 Usage" },
             "properties": [
-              { "id": "unit", "value": "none" },
-              { "id": "custom.width", "value": 90 },
-              { "id": "decimals", "value": 3 }
+              { "id": "unit", "value": "suffix:m" },
+              { "id": "custom.width", "value": 100 },
+              { "id": "decimals", "value": 1 }
             ]
           },
           {
             "matcher": { "id": "byName", "options": "Recommended" },
             "properties": [
-              { "id": "unit", "value": "none" },
+              { "id": "unit", "value": "suffix:m" },
               { "id": "custom.width", "value": 110 },
-              { "id": "decimals", "value": 2 },
+              { "id": "decimals", "value": 0 },
               { "id": "custom.cellOptions", "value": { "type": "color-text" } },
               { "id": "color", "value": { "mode": "fixed", "fixedColor": "super-light-blue" } }
             ]
@@ -238,11 +238,11 @@
           {
             "matcher": { "id": "byName", "options": "Potential Savings" },
             "properties": [
-              { "id": "unit", "value": "none" },
+              { "id": "unit", "value": "suffix:m" },
               { "id": "custom.width", "value": 130 },
-              { "id": "decimals", "value": 2 },
+              { "id": "decimals", "value": 0 },
               { "id": "custom.cellOptions", "value": { "type": "color-text" } },
-              { "id": "thresholds", "value": { "mode": "absolute", "steps": [{ "color": "text", "value": null }, { "color": "yellow", "value": 0.1 }, { "color": "orange", "value": 0.5 }, { "color": "red", "value": 1 }] } }
+              { "id": "thresholds", "value": { "mode": "absolute", "steps": [{ "color": "text", "value": null }, { "color": "yellow", "value": 100 }, { "color": "orange", "value": 500 }, { "color": "red", "value": 1000 }] } }
             ]
           }
         ]
@@ -263,7 +263,7 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum(kube_pod_container_resource_requests{resource=\"cpu\",container!=\"POD\",namespace=~\"$namespace\"}) by (namespace, pod) > 0",
+          "expr": "sum(kube_pod_container_resource_requests{resource=\"cpu\",container!=\"POD\",namespace=~\"$namespace\"}) by (namespace, pod) * 1000 > 0",
           "format": "table",
           "instant": true,
           "legendFormat": "",
@@ -271,7 +271,7 @@
         },
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "avg_over_time((sum(rate(container_cpu_usage_seconds_total{container!=\"POD\",container!=\"\",namespace=~\"$namespace\"}[5m])) by (namespace, pod))[24h:5m])",
+          "expr": "avg_over_time((sum(rate(container_cpu_usage_seconds_total{container!=\"POD\",container!=\"\",namespace=~\"$namespace\"}[5m])) by (namespace, pod))[24h:5m]) * 1000",
           "format": "table",
           "instant": true,
           "legendFormat": "",
@@ -279,11 +279,19 @@
         },
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "quantile_over_time(0.95, (sum(rate(container_cpu_usage_seconds_total{container!=\"POD\",container!=\"\",namespace=~\"$namespace\"}[5m])) by (namespace, pod))[24h:5m])",
+          "expr": "quantile_over_time(0.95, (sum(rate(container_cpu_usage_seconds_total{container!=\"POD\",container!=\"\",namespace=~\"$namespace\"}[5m])) by (namespace, pod))[24h:5m]) * 1000",
           "format": "table",
           "instant": true,
           "legendFormat": "",
           "refId": "p95"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "clamp_min(ceil(quantile_over_time(0.95, (sum(rate(container_cpu_usage_seconds_total{container!=\"POD\",container!=\"\",namespace=~\"$namespace\"}[5m])) by (namespace, pod))[24h:5m]) * 1.2 * 100) * 10, 10)",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "",
+          "refId": "recommended"
         }
       ],
       "title": "CPU Optimization Recommendations",
@@ -301,24 +309,17 @@
               "pod": 1,
               "Value #request": 2,
               "Value #avg": 3,
-              "Value #p95": 4
+              "Value #p95": 4,
+              "Value #recommended": 5
             },
             "renameByName": {
               "namespace": "Namespace",
               "pod": "Pod",
               "Value #request": "Request",
               "Value #avg": "Avg Usage",
-              "Value #p95": "P95 Usage"
+              "Value #p95": "P95 Usage",
+              "Value #recommended": "Recommended"
             }
-          }
-        },
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "Recommended",
-            "binary": { "left": "P95 Usage", "operator": "*", "right": "1.2" },
-            "mode": "binary",
-            "reduce": { "reducer": "sum" }
           }
         },
         {
@@ -388,9 +389,9 @@
           {
             "matcher": { "id": "byName", "options": "Request" },
             "properties": [
-              { "id": "unit", "value": "decbytes" },
+              { "id": "unit", "value": "suffix:Mi" },
               { "id": "custom.width", "value": 100 },
-              { "id": "decimals", "value": 1 },
+              { "id": "decimals", "value": 0 },
               { "id": "custom.cellOptions", "value": { "type": "color-text" } },
               { "id": "color", "value": { "mode": "fixed", "fixedColor": "text" } }
             ]
@@ -398,7 +399,7 @@
           {
             "matcher": { "id": "byName", "options": "Avg Usage" },
             "properties": [
-              { "id": "unit", "value": "decbytes" },
+              { "id": "unit", "value": "suffix:Mi" },
               { "id": "custom.width", "value": 100 },
               { "id": "decimals", "value": 1 }
             ]
@@ -406,7 +407,7 @@
           {
             "matcher": { "id": "byName", "options": "P95 Usage" },
             "properties": [
-              { "id": "unit", "value": "decbytes" },
+              { "id": "unit", "value": "suffix:Mi" },
               { "id": "custom.width", "value": 100 },
               { "id": "decimals", "value": 1 }
             ]
@@ -414,9 +415,9 @@
           {
             "matcher": { "id": "byName", "options": "Recommended" },
             "properties": [
-              { "id": "unit", "value": "decbytes" },
+              { "id": "unit", "value": "suffix:Mi" },
               { "id": "custom.width", "value": 110 },
-              { "id": "decimals", "value": 1 },
+              { "id": "decimals", "value": 0 },
               { "id": "custom.cellOptions", "value": { "type": "color-text" } },
               { "id": "color", "value": { "mode": "fixed", "fixedColor": "super-light-blue" } }
             ]
@@ -436,11 +437,11 @@
           {
             "matcher": { "id": "byName", "options": "Potential Savings" },
             "properties": [
-              { "id": "unit", "value": "decbytes" },
+              { "id": "unit", "value": "suffix:Mi" },
               { "id": "custom.width", "value": 130 },
-              { "id": "decimals", "value": 1 },
+              { "id": "decimals", "value": 0 },
               { "id": "custom.cellOptions", "value": { "type": "color-text" } },
-              { "id": "thresholds", "value": { "mode": "absolute", "steps": [{ "color": "text", "value": null }, { "color": "yellow", "value": 104857600 }, { "color": "orange", "value": 536870912 }, { "color": "red", "value": 1073741824 }] } }
+              { "id": "thresholds", "value": { "mode": "absolute", "steps": [{ "color": "text", "value": null }, { "color": "yellow", "value": 100 }, { "color": "orange", "value": 512 }, { "color": "red", "value": 1024 }] } }
             ]
           }
         ]
@@ -461,7 +462,7 @@
       "targets": [
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "sum(kube_pod_container_resource_requests{resource=\"memory\",container!=\"POD\",namespace=~\"$namespace\"}) by (namespace, pod) > 0",
+          "expr": "sum(kube_pod_container_resource_requests{resource=\"memory\",container!=\"POD\",namespace=~\"$namespace\"}) by (namespace, pod) / 1048576 > 0",
           "format": "table",
           "instant": true,
           "legendFormat": "",
@@ -469,7 +470,7 @@
         },
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "avg_over_time((sum(container_memory_working_set_bytes{container!=\"POD\",container!=\"\",namespace=~\"$namespace\"}) by (namespace, pod))[24h:5m])",
+          "expr": "avg_over_time((sum(container_memory_working_set_bytes{container!=\"POD\",container!=\"\",namespace=~\"$namespace\"}) by (namespace, pod))[24h:5m]) / 1048576",
           "format": "table",
           "instant": true,
           "legendFormat": "",
@@ -477,11 +478,19 @@
         },
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "expr": "quantile_over_time(0.95, (sum(container_memory_working_set_bytes{container!=\"POD\",container!=\"\",namespace=~\"$namespace\"}) by (namespace, pod))[24h:5m])",
+          "expr": "quantile_over_time(0.95, (sum(container_memory_working_set_bytes{container!=\"POD\",container!=\"\",namespace=~\"$namespace\"}) by (namespace, pod))[24h:5m]) / 1048576",
           "format": "table",
           "instant": true,
           "legendFormat": "",
           "refId": "p95"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "${datasource}" },
+          "expr": "clamp_min(ceil(quantile_over_time(0.95, (sum(container_memory_working_set_bytes{container!=\"POD\",container!=\"\",namespace=~\"$namespace\"}) by (namespace, pod))[24h:5m]) * 1.2 / 67108864) * 64, 64)",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "",
+          "refId": "recommended"
         }
       ],
       "title": "Memory Optimization Recommendations",
@@ -499,24 +508,17 @@
               "pod": 1,
               "Value #request": 2,
               "Value #avg": 3,
-              "Value #p95": 4
+              "Value #p95": 4,
+              "Value #recommended": 5
             },
             "renameByName": {
               "namespace": "Namespace",
               "pod": "Pod",
               "Value #request": "Request",
               "Value #avg": "Avg Usage",
-              "Value #p95": "P95 Usage"
+              "Value #p95": "P95 Usage",
+              "Value #recommended": "Recommended"
             }
-          }
-        },
-        {
-          "id": "calculateField",
-          "options": {
-            "alias": "Recommended",
-            "binary": { "left": "P95 Usage", "operator": "*", "right": "1.2" },
-            "mode": "binary",
-            "reduce": { "reducer": "sum" }
           }
         },
         {
