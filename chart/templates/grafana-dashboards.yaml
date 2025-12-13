@@ -1,0 +1,36 @@
+{{- if .Values.grafana.enabled }}
+{{- $root := . }}
+{{- range $path, $_ := .Files.Glob "dashboards/*.json" }}
+{{- $name := $path | base | trimSuffix ".json" }}
+
+{{- /* Check mixin enablement based on dashboard name */}}
+{{- $enabled := true }}
+{{- if hasPrefix "argo-cd-" $name }}
+  {{- $enabled = $root.Values.mixins.argocd.enabled }}
+{{- else if or (hasPrefix "node-" $name) (hasPrefix "nodes" $name) }}
+  {{- $enabled = $root.Values.mixins.nodeExporter.enabled }}
+{{- else if eq $name "pod-optimization" }}
+  {{- $enabled = $root.Values.mixins.resourceOptimization.enabled }}
+{{- else if contains "windows" $name }}
+  {{- $enabled = $root.Values.mixins.windows.enabled }}
+{{- else }}
+  {{- $enabled = $root.Values.mixins.kubernetes.enabled }}
+{{- end }}
+
+{{- if $enabled }}
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: {{ $name }}
+  namespace: {{ $root.Values.grafana.namespace }}
+  labels:
+    {{- include "gitops-mixin.labels" $root | nindent 4 }}
+spec:
+  instanceSelector:
+    {{- toYaml $root.Values.grafana.instanceSelector | nindent 4 }}
+  json: |
+    {{- $root.Files.Get $path | nindent 4 }}
+{{- end }}
+{{- end }}
+{{- end }}

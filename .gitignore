@@ -1,0 +1,16 @@
+# Jsonnet vendor directory
+jsonnet/vendor/
+
+# Generated chart files
+chart/dashboards/
+chart/rules/
+
+# Helm packages
+*.tgz
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store

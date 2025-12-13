@@ -1,0 +1,46 @@
+# gitops-mixin Helm chart values
+
+# Mixin selection - enable/disable individual mixins
+mixins:
+  kubernetes:
+    enabled: true
+  nodeExporter:
+    enabled: true
+  resourceOptimization:
+    enabled: true
+  argocd:
+    enabled: true
+  windows:
+    enabled: false
+
+# Grafana configuration
+grafana:
+  # Enable GrafanaDashboard CRDs (requires Grafana Operator)
+  enabled: true
+  # Namespace where Grafana is deployed
+  namespace: grafana
+  # Label selector for Grafana instance
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  # Folder names for dashboards
+  folders:
+    kubernetes: Kubernetes
+    nodeExporter: Node Exporter
+    resourceOptimization: Resource Optimization
+    argocd: Argo CD
+
+# Prometheus configuration
+prometheus:
+  # Enable PrometheusRule CRDs
+  enabled: true
+  # Namespace for PrometheusRule resources
+  namespace: monitoring
+  # Labels to add to PrometheusRule resources
+  labels:
+    release: prometheus
+
+# Datasource configuration
+datasource:
+  name: prometheus
+  uid: prometheus

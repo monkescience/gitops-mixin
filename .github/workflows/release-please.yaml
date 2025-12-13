@@ -1,0 +1,91 @@
+name: Release Please
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Pre-release version (e.g., 0.2.0-rc.1)'
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  HELM_CHART_NAME: gitops-mixin
+  HELM_REPOSITORY: monkescience/helm-charts
+  HELM_VERSION: v3.19.0 # renovate: datasource=github-releases depName=helm/helm
+  JSONNET_VERSION: v0.21.0 # renovate: datasource=github-releases depName=google/go-jsonnet
+  JB_VERSION: v0.6.0 # renovate: datasource=github-releases depName=jsonnet-bundler/jsonnet-bundler
+
+jobs:
+  release-please:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+      sha: ${{ steps.release.outputs.sha }}
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - name: Generate GitHub App token
+        id: generate-token
+        uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94 # v2
+        with:
+          app-id: ${{ vars.RELEASE_PLEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_PLEASE_APP_PRIVATE_KEY }}
+          owner: monkescience
+
+      - name: Run release-please
+        id: release
+        uses: googleapis/release-please-action@16a9c90856f42705d54a6fda1823352bdc62cf38 # v4
+        with:
+          github-api-url: ${{ github.api_url }}
+          github-graphql-url: ${{ github.graphql_url }}
+          config-file: .release-please-config.json
+          manifest-file: .release-please-manifest.json
+          token: ${{ steps.generate-token.outputs.token }}
+
+  publish:
+    needs: release-please
+    if: ${{ always() && (needs.release-please.outputs.release_created == 'true' || github.event_name == 'workflow_dispatch') }}
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.release-please.outputs.version || github.event.inputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+
+      - name: Setup Jsonnet
+        uses: kobtea/setup-jsonnet-action@v2
+        with:
+          jsonnet-version: ${{ env.JSONNET_VERSION }}
+          jsonnet-bundler-version: ${{ env.JB_VERSION }}
+
+      - name: Install yq
+        uses: mikefarah/yq@v4
+
+      - name: Build dashboards and alerts
+        run: make deps && make build
+
+      - name: Set up Helm
+        uses: azure/setup-helm@1a275c3b69536ee54be43f2070a358922e12c8d4 # v4
+        with:
+          version: ${{ env.HELM_VERSION }}
+
+      - name: Package Helm chart
+        run: |
+          helm lint chart --strict
+          helm package chart --version "${{ env.VERSION }}" --app-version "${{ env.VERSION }}"
+
+      - name: Push Helm chart to GHCR (OCI)
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ghcr.io --username ${{ github.actor }} --password-stdin
+          helm push ${{ env.HELM_CHART_NAME }}-${{ env.VERSION }}.tgz oci://ghcr.io/${{ env.HELM_REPOSITORY }}

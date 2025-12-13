@@ -1,0 +1,36 @@
+{{- if .Values.prometheus.enabled }}
+{{- $root := . }}
+{{- range $path, $_ := .Files.Glob "rules/*.yaml" }}
+{{- $filename := $path | base | trimSuffix ".yaml" }}
+{{- $content := $root.Files.Get $path | fromYaml }}
+
+{{- /* Check mixin enablement based on filename prefix */}}
+{{- $enabled := true }}
+{{- if hasPrefix "kubernetes-" $filename }}
+  {{- $enabled = $root.Values.mixins.kubernetes.enabled }}
+{{- else if hasPrefix "node-exporter-" $filename }}
+  {{- $enabled = $root.Values.mixins.nodeExporter.enabled }}
+{{- else if hasPrefix "argocd-" $filename }}
+  {{- $enabled = $root.Values.mixins.argocd.enabled }}
+{{- else if hasPrefix "resource-optimization-" $filename }}
+  {{- $enabled = $root.Values.mixins.resourceOptimization.enabled }}
+{{- end }}
+
+{{- if $enabled }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ $content.name | default $filename }}
+  namespace: {{ $root.Values.prometheus.namespace }}
+  labels:
+    {{- include "gitops-mixin.labels" $root | nindent 4 }}
+    {{- with $root.Values.prometheus.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  groups:
+    {{- toYaml $content.groups | nindent 4 }}
+{{- end }}
+{{- end }}
+{{- end }}

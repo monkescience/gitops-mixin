@@ -1,0 +1,31 @@
+local config = import 'config.libsonnet';
+
+// Import upstream mixins
+local kubernetesMixin = import 'kubernetes-mixin/mixin.libsonnet';
+local nodeExporterMixin = import 'node-mixin/mixin.libsonnet';
+local argoCdMixin = import 'argo-cd-mixin/mixin.libsonnet';
+
+// Import resource-optimization mixin
+local resourceOptimizationDashboards = import 'dashboards/resource-optimization/dashboards.libsonnet';
+local resourceOptimizationAlerts = import 'alerts/resource-optimization/alerts.libsonnet';
+
+config {
+  // Per-mixin exports for separate file generation (used by Makefile)
+  kubernetesAlerts:: kubernetesMixin.prometheusAlerts,
+  kubernetesRules:: kubernetesMixin.prometheusRules,
+
+  nodeExporterAlerts:: nodeExporterMixin.prometheusAlerts,
+  nodeExporterRules:: nodeExporterMixin.prometheusRules,
+
+  argoCdAlerts:: argoCdMixin.prometheusAlerts,
+  argoCdRules:: argoCdMixin.prometheusRules,
+
+  resourceOptimizationAlerts:: resourceOptimizationAlerts.alerts,
+
+  // Merged dashboards (used by Makefile with -m flag for individual files)
+  grafanaDashboards+::
+    (if $._config.enableKubernetesMixin then kubernetesMixin.grafanaDashboards else {}) +
+    (if $._config.enableNodeExporterMixin then nodeExporterMixin.grafanaDashboards else {}) +
+    (if $._config.enableResourceOptimizationMixin then resourceOptimizationDashboards else {}) +
+    (if $._config.enableArgoCdMixin then argoCdMixin.grafanaDashboards else {}),
+}
