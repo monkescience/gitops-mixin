@@ -21,8 +21,7 @@ grafana:
   namespace: grafana
   # Label selector for Grafana instance
   instanceSelector:
-    matchLabels:
-      dashboards: grafana
+    matchLabels: {}
   # Folder names for dashboards
   folders:
     kubernetes: Kubernetes
