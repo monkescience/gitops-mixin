@@ -3,18 +3,24 @@
 {{- range $path, $_ := .Files.Glob "dashboards/*.json" }}
 {{- $name := $path | base | trimSuffix ".json" }}
 
-{{- /* Check mixin enablement based on dashboard name */}}
+{{- /* Check mixin enablement and folder based on dashboard name */}}
 {{- $enabled := true }}
+{{- $folder := "" }}
 {{- if hasPrefix "argo-cd-" $name }}
   {{- $enabled = $root.Values.mixins.argocd.enabled }}
+  {{- $folder = $root.Values.grafana.folders.argocd }}
 {{- else if or (hasPrefix "node-" $name) (hasPrefix "nodes" $name) }}
   {{- $enabled = $root.Values.mixins.nodeExporter.enabled }}
+  {{- $folder = $root.Values.grafana.folders.nodeExporter }}
 {{- else if eq $name "pod-optimization" }}
   {{- $enabled = $root.Values.mixins.resourceOptimization.enabled }}
+  {{- $folder = $root.Values.grafana.folders.resourceOptimization }}
 {{- else if contains "windows" $name }}
   {{- $enabled = $root.Values.mixins.windows.enabled }}
+  {{- $folder = $root.Values.grafana.folders.windows | default "Windows" }}
 {{- else }}
   {{- $enabled = $root.Values.mixins.kubernetes.enabled }}
+  {{- $folder = $root.Values.grafana.folders.kubernetes }}
 {{- end }}
 
 {{- if $enabled }}
@@ -27,6 +33,7 @@ metadata:
   labels:
     {{- include "gitops-mixin.labels" $root | nindent 4 }}
 spec:
+  folder: {{ $folder }}
   instanceSelector:
     {{- toYaml $root.Values.grafana.instanceSelector | nindent 4 }}
   json: |
