@@ -65,8 +65,7 @@ jobs:
 
       - name: Install Jsonnet
         run: |
-          VERSION="${JSONNET_VERSION#v}"
-          curl -sLo /tmp/go-jsonnet.tar.gz "https://github.com/google/go-jsonnet/releases/download/${{ env.JSONNET_VERSION }}/go-jsonnet_${VERSION}_Linux_x86_64.tar.gz"
+          curl -sLo /tmp/go-jsonnet.tar.gz "https://github.com/google/go-jsonnet/releases/download/${{ env.JSONNET_VERSION }}/go-jsonnet_Linux_x86_64.tar.gz"
           tar -xzf /tmp/go-jsonnet.tar.gz -C /usr/local/bin jsonnet jsonnetfmt
 
       - name: Install jsonnet-bundler
