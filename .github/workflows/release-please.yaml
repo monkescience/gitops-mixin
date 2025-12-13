@@ -63,10 +63,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
 
-      - name: Setup Jsonnet
-        uses: zendesk/setup-jsonnet@v1
-        with:
-          version: ${{ env.JSONNET_VERSION }}
+      - name: Install Jsonnet
+        run: |
+          VERSION="${JSONNET_VERSION#v}"
+          curl -sLo /tmp/go-jsonnet.tar.gz "https://github.com/google/go-jsonnet/releases/download/${{ env.JSONNET_VERSION }}/go-jsonnet_${VERSION}_Linux_x86_64.tar.gz"
+          tar -xzf /tmp/go-jsonnet.tar.gz -C /usr/local/bin jsonnet jsonnetfmt
 
       - name: Install jsonnet-bundler
         run: |
