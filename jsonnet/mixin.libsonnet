@@ -1,9 +1,9 @@
 local config = import 'config.libsonnet';
 
 // Import upstream mixins
-local kubernetesMixin = import 'kubernetes-mixin/mixin.libsonnet';
-local nodeExporterMixin = import 'node-mixin/mixin.libsonnet';
-local argoCdMixin = import 'argo-cd-mixin/mixin.libsonnet';
+local kubernetesMixin = (import 'kubernetes-mixin/mixin.libsonnet') + config;
+local nodeExporterMixin = (import 'node-mixin/mixin.libsonnet') + config;
+local argoCdMixin = (import 'argo-cd-mixin/mixin.libsonnet') + config;
 
 // Import resource-optimization mixin
 local resourceOptimizationDashboards = import 'dashboards/resource-optimization/dashboards.libsonnet';
