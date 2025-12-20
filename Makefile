@@ -55,6 +55,13 @@ alerts:
 	$(JSONNET) -J $(JSONNET_DIR)/vendor \
 		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").argoCdRules' \
 		| yq -P > $(RULES_DIR)/argocd-rules.yaml
+	# Loki mixin
+	$(JSONNET) -J $(JSONNET_DIR)/vendor \
+		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").lokiAlerts' \
+		| yq -P > $(RULES_DIR)/loki-alerts.yaml
+	$(JSONNET) -J $(JSONNET_DIR)/vendor \
+		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").lokiRules' \
+		| yq -P > $(RULES_DIR)/loki-rules.yaml
 	# Resource Optimization mixin
 	$(JSONNET) -J $(JSONNET_DIR)/vendor \
 		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").resourceOptimizationAlerts' \

@@ -4,14 +4,22 @@
 mixins:
   kubernetes:
     enabled: true
+    # Windows dashboards (part of kubernetes-mixin)
+    windows:
+      enabled: false
   nodeExporter:
     enabled: true
+    # Platform-specific dashboards
+    platforms:
+      linux: true
+      darwin: false
+      aix: false
   resourceOptimization:
     enabled: true
   argocd:
     enabled: true
-  windows:
-    enabled: false
+  loki:
+    enabled: true
 
 # Grafana configuration
 grafana:
@@ -28,6 +36,7 @@ grafana:
     nodeExporter: Node Exporter
     resourceOptimization: Resource Optimization
     argocd: Argo CD
+    loki: Loki
 
 # Prometheus configuration
 prometheus:

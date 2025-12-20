@@ -5,6 +5,7 @@
     enableNodeExporterMixin: true,
     enableResourceOptimizationMixin: true,
     enableArgoCdMixin: true,
+    enableLokiMixin: true,
 
     // Grafana settings
     grafanaFolders: {
@@ -12,6 +13,7 @@
       nodeExporter: 'Node Exporter',
       resourceOptimization: 'Resource Optimization',
       argocd: 'Argo CD',
+      loki: 'Loki',
     },
 
     // Dashboard datasource

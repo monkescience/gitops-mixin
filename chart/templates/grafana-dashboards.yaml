@@ -9,15 +9,32 @@
 {{- if hasPrefix "argo-cd-" $name }}
   {{- $enabled = $root.Values.mixins.argocd.enabled }}
   {{- $folder = $root.Values.grafana.folders.argocd }}
-{{- else if or (hasPrefix "node-" $name) (hasPrefix "nodes" $name) }}
+{{- else if eq $name "nodes" }}
+  {{- /* Linux nodes dashboard */}}
+  {{- $enabled = and $root.Values.mixins.nodeExporter.enabled $root.Values.mixins.nodeExporter.platforms.linux }}
+  {{- $folder = $root.Values.grafana.folders.nodeExporter }}
+{{- else if eq $name "nodes-darwin" }}
+  {{- /* Darwin/macOS nodes dashboard */}}
+  {{- $enabled = and $root.Values.mixins.nodeExporter.enabled $root.Values.mixins.nodeExporter.platforms.darwin }}
+  {{- $folder = $root.Values.grafana.folders.nodeExporter }}
+{{- else if eq $name "nodes-aix" }}
+  {{- /* AIX nodes dashboard */}}
+  {{- $enabled = and $root.Values.mixins.nodeExporter.enabled $root.Values.mixins.nodeExporter.platforms.aix }}
+  {{- $folder = $root.Values.grafana.folders.nodeExporter }}
+{{- else if hasPrefix "node-" $name }}
+  {{- /* USE Method dashboards (platform-agnostic) */}}
   {{- $enabled = $root.Values.mixins.nodeExporter.enabled }}
   {{- $folder = $root.Values.grafana.folders.nodeExporter }}
 {{- else if eq $name "pod-optimization" }}
   {{- $enabled = $root.Values.mixins.resourceOptimization.enabled }}
   {{- $folder = $root.Values.grafana.folders.resourceOptimization }}
 {{- else if contains "windows" $name }}
-  {{- $enabled = $root.Values.mixins.windows.enabled }}
-  {{- $folder = $root.Values.grafana.folders.windows | default "Windows" }}
+  {{- /* Windows dashboards (part of kubernetes-mixin) */}}
+  {{- $enabled = and $root.Values.mixins.kubernetes.enabled $root.Values.mixins.kubernetes.windows.enabled }}
+  {{- $folder = $root.Values.grafana.folders.kubernetes }}
+{{- else if hasPrefix "loki-" $name }}
+  {{- $enabled = $root.Values.mixins.loki.enabled }}
+  {{- $folder = $root.Values.grafana.folders.loki }}
 {{- else }}
   {{- $enabled = $root.Values.mixins.kubernetes.enabled }}
   {{- $folder = $root.Values.grafana.folders.kubernetes }}
