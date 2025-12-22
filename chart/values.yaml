@@ -6,15 +6,15 @@ mixins:
     enabled: true
     # -- Enable Windows-specific dashboards.
     windows:
-      enabled: false
+      enabled: true
   # -- Node Exporter mixin: host-level metrics dashboards.
   nodeExporter:
     enabled: true
     # -- Enable platform-specific dashboards.
     platforms:
       linux: true
-      darwin: false
-      aix: false
+      darwin: true
+      aix: true
   # -- Resource Optimization mixin: cost and resource efficiency dashboards.
   resourceOptimization:
     enabled: true
@@ -41,8 +41,10 @@ grafana:
   # -- Namespace where Grafana Operator watches for GrafanaDashboard resources.
   namespace: grafana
   # -- Label selector to target a specific Grafana instance.
+  # @default -- `{}` (matches all instances)
   instanceSelector:
-    matchLabels: {}
+    matchLabels:
+      app.kubernetes.io/name: grafana
   # -- Folder names in Grafana UI for each mixin's dashboards.
   folders:
     kubernetes: Kubernetes
@@ -61,12 +63,5 @@ prometheus:
   # -- Namespace for PrometheusRule resources.
   namespace: monitoring
   # -- Labels added to PrometheusRule resources for Prometheus Operator discovery.
-  labels:
-    release: prometheus
-
-# -- Datasource used in dashboard queries.
-datasource:
-  # -- Datasource name referenced in dashboards.
-  name: prometheus
-  # -- Datasource UID for Grafana.
-  uid: prometheus
+  # Must match the ruleSelector configured in your Prometheus/Alloy.
+  labels: {}
