@@ -25,6 +25,16 @@
     {
       "source": {
         "git": {
+          "remote": "https://github.com/grafana/alloy.git",
+          "subdir": "operations/alloy-mixin"
+        }
+      },
+      "version": "77f810bd8a88292e41a4cf0da6ec0a27169cb025",
+      "sum": "rqO72xlIXcCyMiE4IqbpuPrAyoCOxObG+jXAhew7fDk="
+    },
+    {
+      "source": {
+        "git": {
           "remote": "https://github.com/grafana/grafonnet-lib.git",
           "subdir": "grafonnet"
         }
@@ -46,6 +56,16 @@
       "source": {
         "git": {
           "remote": "https://github.com/grafana/grafonnet.git",
+          "subdir": "gen/grafonnet-v11.0.0"
+        }
+      },
+      "version": "7380c9c64fb973f34c3ec46265621a2b0dee0058",
+      "sum": "0BvzR0i4bS4hc2O3xDv6i9m52z7mPrjvqxtcPrGhynA="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/grafana/grafonnet.git",
           "subdir": "gen/grafonnet-v11.4.0"
         }
       },
@@ -61,6 +81,26 @@
       },
       "version": "5299b4cd62c6c039ae426a1e5225d0d3666f46c9",
       "sum": "YPaA+KJ6JBW9QpxNvl0iAxnC7gL4jRRvulNl6QRkPU0="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/grafana/jsonnet-libs.git",
+          "subdir": "logs-lib/"
+        }
+      },
+      "version": "5299b4cd62c6c039ae426a1e5225d0d3666f46c9",
+      "sum": "rgzaIMC4Gujx86mPdsVfQnzSfxzfuCg/sZPrDJBV3bU="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/grafana/jsonnet-libs.git",
+          "subdir": "logs-lib/logs"
+        }
+      },
+      "version": "5299b4cd62c6c039ae426a1e5225d0d3666f46c9",
+      "sum": "GkY3L75913fiYk9+Rq/R1JEaHEwkFrtvufIWhJZ6MP8="
     },
     {
       "source": {
@@ -101,6 +141,16 @@
       },
       "version": "ee4822b061cb7497b7e8a716161dfa0e3230c0ca",
       "sum": "zz2Sep/VbyrGcKKa3wy0oGIwMq2qEqBiLTVEVmqDMDE="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/grafana/tempo.git",
+          "subdir": "operations/tempo-mixin"
+        }
+      },
+      "version": "cb4c73ebe1d218273eeb72f94ba82d8f310ce5d9",
+      "sum": "OL/vKvf1diZ226VZov6uFZx4NSB447aXQ4NAqDWFkII="
     },
     {
       "source": {

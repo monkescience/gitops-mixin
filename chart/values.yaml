@@ -1,54 +1,72 @@
-# gitops-mixin Helm chart values
-
-# Mixin selection - enable/disable individual mixins
+# -- Mixin selection.
+# Each mixin provides Grafana dashboards and Prometheus alerting/recording rules.
 mixins:
+  # -- Kubernetes mixin: cluster, workload, and resource dashboards.
   kubernetes:
     enabled: true
-    # Windows dashboards (part of kubernetes-mixin)
+    # -- Enable Windows-specific dashboards.
     windows:
       enabled: false
+  # -- Node Exporter mixin: host-level metrics dashboards.
   nodeExporter:
     enabled: true
-    # Platform-specific dashboards
+    # -- Enable platform-specific dashboards.
     platforms:
       linux: true
       darwin: false
       aix: false
+  # -- Resource Optimization mixin: cost and resource efficiency dashboards.
   resourceOptimization:
     enabled: true
+  # -- Argo CD mixin: GitOps application and sync status dashboards.
   argocd:
     enabled: true
+  # -- Loki mixin: log aggregation dashboards.
   loki:
     enabled: true
+  # -- Alloy mixin: Grafana Alloy collector dashboards.
+  alloy:
+    enabled: true
+  # -- Mimir mixin: metrics backend dashboards.
+  mimir:
+    enabled: true
+  # -- Tempo mixin: distributed tracing dashboards.
+  tempo:
+    enabled: true
 
-# Grafana configuration
+# -- Grafana dashboard configuration.
 grafana:
-  # Enable GrafanaDashboard CRDs (requires Grafana Operator)
+  # -- Deploy GrafanaDashboard CRDs (requires Grafana Operator).
   enabled: true
-  # Namespace where Grafana is deployed
+  # -- Namespace where Grafana Operator watches for GrafanaDashboard resources.
   namespace: grafana
-  # Label selector for Grafana instance
+  # -- Label selector to target a specific Grafana instance.
   instanceSelector:
     matchLabels: {}
-  # Folder names for dashboards
+  # -- Folder names in Grafana UI for each mixin's dashboards.
   folders:
     kubernetes: Kubernetes
     nodeExporter: Node Exporter
     resourceOptimization: Resource Optimization
     argocd: Argo CD
     loki: Loki
+    alloy: Alloy
+    mimir: Mimir
+    tempo: Tempo
 
-# Prometheus configuration
+# -- Prometheus alerting and recording rules configuration.
 prometheus:
-  # Enable PrometheusRule CRDs
+  # -- Deploy PrometheusRule CRDs.
   enabled: true
-  # Namespace for PrometheusRule resources
+  # -- Namespace for PrometheusRule resources.
   namespace: monitoring
-  # Labels to add to PrometheusRule resources
+  # -- Labels added to PrometheusRule resources for Prometheus Operator discovery.
   labels:
     release: prometheus
 
-# Datasource configuration
+# -- Datasource used in dashboard queries.
 datasource:
+  # -- Datasource name referenced in dashboards.
   name: prometheus
+  # -- Datasource UID for Grafana.
   uid: prometheus

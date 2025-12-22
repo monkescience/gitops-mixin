@@ -62,6 +62,24 @@ alerts:
 	$(JSONNET) -J $(JSONNET_DIR)/vendor \
 		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").lokiRules' \
 		| yq -P > $(RULES_DIR)/loki-rules.yaml
+	# Alloy mixin (no rules, only alerts)
+	$(JSONNET) -J $(JSONNET_DIR)/vendor \
+		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").alloyAlerts' \
+		| yq -P > $(RULES_DIR)/alloy-alerts.yaml
+	# Mimir mixin
+	$(JSONNET) -J $(JSONNET_DIR)/vendor \
+		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").mimirAlerts' \
+		| yq -P > $(RULES_DIR)/mimir-alerts.yaml
+	$(JSONNET) -J $(JSONNET_DIR)/vendor \
+		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").mimirRules' \
+		| yq -P > $(RULES_DIR)/mimir-rules.yaml
+	# Tempo mixin
+	$(JSONNET) -J $(JSONNET_DIR)/vendor \
+		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").tempoAlerts' \
+		| yq -P > $(RULES_DIR)/tempo-alerts.yaml
+	$(JSONNET) -J $(JSONNET_DIR)/vendor \
+		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").tempoRules' \
+		| yq -P > $(RULES_DIR)/tempo-rules.yaml
 	# Resource Optimization mixin
 	$(JSONNET) -J $(JSONNET_DIR)/vendor \
 		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").resourceOptimizationAlerts' \

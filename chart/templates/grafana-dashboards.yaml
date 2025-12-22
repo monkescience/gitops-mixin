@@ -35,6 +35,15 @@
 {{- else if hasPrefix "loki-" $name }}
   {{- $enabled = $root.Values.mixins.loki.enabled }}
   {{- $folder = $root.Values.grafana.folders.loki }}
+{{- else if hasPrefix "alloy-" $name }}
+  {{- $enabled = $root.Values.mixins.alloy.enabled }}
+  {{- $folder = $root.Values.grafana.folders.alloy }}
+{{- else if hasPrefix "mimir-" $name }}
+  {{- $enabled = $root.Values.mixins.mimir.enabled }}
+  {{- $folder = $root.Values.grafana.folders.mimir }}
+{{- else if hasPrefix "tempo-" $name }}
+  {{- $enabled = $root.Values.mixins.tempo.enabled }}
+  {{- $folder = $root.Values.grafana.folders.tempo }}
 {{- else }}
   {{- $enabled = $root.Values.mixins.kubernetes.enabled }}
   {{- $folder = $root.Values.grafana.folders.kubernetes }}
