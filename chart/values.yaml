@@ -41,10 +41,8 @@ grafana:
   # -- Namespace where Grafana Operator watches for GrafanaDashboard resources.
   namespace: grafana
   # -- Label selector to target a specific Grafana instance.
-  # @default -- `{}` (matches all instances)
   instanceSelector:
-    matchLabels:
-      app.kubernetes.io/name: grafana
+    matchLabels: {}
   # -- Folder names in Grafana UI for each mixin's dashboards.
   folders:
     kubernetes: Kubernetes
