@@ -20,24 +20,18 @@
       tempo: 'Tempo',
     },
 
-    datasourceName: 'prometheus',
-    datasourceRegex: '',
-    namespace: 'monitoring',
-
-    // Job selectors for k8s-monitoring 3.6.1.
     kubernetesMixinConfig: {
-      cadvisorSelector: 'job="integrations/kubernetes/cadvisor"',
-      kubeletSelector: 'job="integrations/kubernetes/kubelet"',
-      kubeStateMetricsSelector: 'job="integrations/kubernetes/kube-state-metrics"',
-      kubeApiserverSelector: 'job="integrations/kubernetes/kube-apiserver"',
+      cadvisorSelector: 'job="cadvisor"',
+      kubeletSelector: 'job="kubelet"',
+      kubeStateMetricsSelector: 'job="kube-state-metrics"',
+      kubeApiserverSelector: 'job="kube-apiserver"',
       kubeSchedulerSelector: 'job="kube-scheduler"',
       kubeControllerManagerSelector: 'job="kube-controller-manager"',
       kubeProxySelector: 'job="kube-proxy"',
-      cpuThrottlingPercent: 25,
     },
 
     nodeExporterMixinConfig: {
-      nodeExporterSelector: 'job="integrations/node_exporter"',
+      nodeExporterSelector: 'job="node-exporter"',
       diskDeviceSelector: 'device=~"(/dev/)?(mmcblk.p.+|nvme.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"',
     },
 
