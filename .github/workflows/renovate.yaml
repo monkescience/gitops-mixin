@@ -22,4 +22,5 @@ jobs:
         with:
           token: ${{ steps.generate-token.outputs.token }}
         env:
+          RENOVATE_REPOSITORIES: ${{ github.repository }}
           LOG_LEVEL: info
