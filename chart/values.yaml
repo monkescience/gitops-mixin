@@ -1,65 +1,183 @@
-# -- Mixin selection.
+# -- Mixin configuration.
 # Each mixin provides Grafana dashboards and Prometheus alerting/recording rules.
+# All configuration is per-mixin for full control over namespaces, labels, and folders.
 mixins:
-  # -- Kubernetes mixin: cluster, workload, and resource dashboards.
+  # -- Kubernetes mixin provides cluster, workload, and resource dashboards.
+  # Includes API server, controller manager, scheduler, kubelet, and proxy metrics.
   kubernetes:
+    # -- Enable or disable the Kubernetes mixin.
     enabled: true
-    # -- Enable Windows-specific dashboards.
+    # -- Namespace for PrometheusRule and GrafanaDashboard resources.
+    namespace: kube-system
+    # -- Alert configuration.
+    alerts:
+      # -- Labels added to PrometheusRule resources for Prometheus/Alloy discovery.
+      # @default -- `{}`
+      labels: {}
+    # -- Dashboard configuration.
+    dashboards:
+      # -- Folder name in Grafana UI where dashboards will be organized.
+      folder: Kubernetes
+      # -- Label selector to target a specific Grafana instance (Grafana Operator).
+      # @default -- `{}`
+      instanceSelector:
+        matchLabels: {}
+    # -- Windows-specific dashboard configuration.
     windows:
+      # -- Enable Windows node and workload dashboards.
       enabled: true
-  # -- Node Exporter mixin: host-level metrics dashboards.
+
+  # -- Node Exporter mixin provides host-level metrics dashboards.
+  # Includes CPU, memory, disk, and network metrics per node.
   nodeExporter:
+    # -- Enable or disable the Node Exporter mixin.
     enabled: true
-    # -- Enable platform-specific dashboards.
+    # -- Namespace for PrometheusRule and GrafanaDashboard resources.
+    namespace: kube-system
+    # -- Alert configuration.
+    alerts:
+      # -- Labels added to PrometheusRule resources for Prometheus/Alloy discovery.
+      # @default -- `{}`
+      labels: {}
+    # -- Dashboard configuration.
+    dashboards:
+      # -- Folder name in Grafana UI where dashboards will be organized.
+      folder: Node Exporter
+      # -- Label selector to target a specific Grafana instance (Grafana Operator).
+      # @default -- `{}`
+      instanceSelector:
+        matchLabels: {}
+    # -- Platform-specific dashboard configuration.
     platforms:
+      # -- Enable Linux node dashboards.
       linux: true
+      # -- Enable macOS/Darwin node dashboards.
       darwin: true
+      # -- Enable AIX node dashboards.
       aix: true
-  # -- Resource Optimization mixin: cost and resource efficiency dashboards.
+
+  # -- Resource Optimization mixin provides cost and resource efficiency dashboards.
+  # Helps identify over/under-provisioned pods based on actual usage.
   resourceOptimization:
+    # -- Enable or disable the Resource Optimization mixin.
     enabled: true
-  # -- Argo CD mixin: GitOps application and sync status dashboards.
+    # -- Namespace for PrometheusRule and GrafanaDashboard resources.
+    namespace: kube-system
+    # -- Alert configuration.
+    alerts:
+      # -- Labels added to PrometheusRule resources for Prometheus/Alloy discovery.
+      # @default -- `{}`
+      labels: {}
+    # -- Dashboard configuration.
+    dashboards:
+      # -- Folder name in Grafana UI where dashboards will be organized.
+      folder: Resource Optimization
+      # -- Label selector to target a specific Grafana instance (Grafana Operator).
+      # @default -- `{}`
+      instanceSelector:
+        matchLabels: {}
+
+  # -- Argo CD mixin provides GitOps application and sync status dashboards.
+  # Monitors application health, sync status, and operational metrics.
   argocd:
+    # -- Enable or disable the Argo CD mixin.
     enabled: true
-  # -- Loki mixin: log aggregation dashboards.
+    # -- Namespace for PrometheusRule and GrafanaDashboard resources.
+    namespace: argocd
+    # -- Alert configuration.
+    alerts:
+      # -- Labels added to PrometheusRule resources for Prometheus/Alloy discovery.
+      # @default -- `{}`
+      labels: {}
+    # -- Dashboard configuration.
+    dashboards:
+      # -- Folder name in Grafana UI where dashboards will be organized.
+      folder: Argo CD
+      # -- Label selector to target a specific Grafana instance (Grafana Operator).
+      # @default -- `{}`
+      instanceSelector:
+        matchLabels: {}
+
+  # -- Loki mixin provides log aggregation dashboards.
+  # Monitors Loki components: distributors, ingesters, queriers, and compactors.
   loki:
+    # -- Enable or disable the Loki mixin.
     enabled: true
-  # -- Alloy mixin: Grafana Alloy collector dashboards.
+    # -- Namespace for PrometheusRule and GrafanaDashboard resources.
+    namespace: loki
+    # -- Alert configuration.
+    alerts:
+      # -- Labels added to PrometheusRule resources for Prometheus/Alloy discovery.
+      # @default -- `{}`
+      labels: {}
+    # -- Dashboard configuration.
+    dashboards:
+      # -- Folder name in Grafana UI where dashboards will be organized.
+      folder: Loki
+      # -- Label selector to target a specific Grafana instance (Grafana Operator).
+      # @default -- `{}`
+      instanceSelector:
+        matchLabels: {}
+
+  # -- Alloy mixin provides Grafana Alloy collector dashboards.
+  # Monitors Alloy pipelines, components, and resource usage.
   alloy:
+    # -- Enable or disable the Alloy mixin.
     enabled: true
-  # -- Mimir mixin: metrics backend dashboards.
+    # -- Namespace for PrometheusRule and GrafanaDashboard resources.
+    namespace: alloy
+    # -- Alert configuration.
+    alerts:
+      # -- Labels added to PrometheusRule resources for Prometheus/Alloy discovery.
+      # @default -- `{}`
+      labels: {}
+    # -- Dashboard configuration.
+    dashboards:
+      # -- Folder name in Grafana UI where dashboards will be organized.
+      folder: Alloy
+      # -- Label selector to target a specific Grafana instance (Grafana Operator).
+      # @default -- `{}`
+      instanceSelector:
+        matchLabels: {}
+
+  # -- Mimir mixin provides metrics backend dashboards.
+  # Monitors Mimir components: distributors, ingesters, queriers, compactors, and rulers.
   mimir:
+    # -- Enable or disable the Mimir mixin.
     enabled: true
-  # -- Tempo mixin: distributed tracing dashboards.
+    # -- Namespace for PrometheusRule and GrafanaDashboard resources.
+    namespace: mimir
+    # -- Alert configuration.
+    alerts:
+      # -- Labels added to PrometheusRule resources for Prometheus/Alloy discovery.
+      # @default -- `{}`
+      labels: {}
+    # -- Dashboard configuration.
+    dashboards:
+      # -- Folder name in Grafana UI where dashboards will be organized.
+      folder: Mimir
+      # -- Label selector to target a specific Grafana instance (Grafana Operator).
+      # @default -- `{}`
+      instanceSelector:
+        matchLabels: {}
+
+  # -- Tempo mixin provides distributed tracing dashboards.
+  # Monitors Tempo components: distributors, ingesters, queriers, and compactors.
   tempo:
+    # -- Enable or disable the Tempo mixin.
     enabled: true
-
-# -- Grafana dashboard configuration.
-grafana:
-  # -- Deploy GrafanaDashboard CRDs (requires Grafana Operator).
-  enabled: true
-  # -- Namespace where Grafana Operator watches for GrafanaDashboard resources.
-  namespace: grafana
-  # -- Label selector to target a specific Grafana instance.
-  instanceSelector:
-    matchLabels: {}
-  # -- Folder names in Grafana UI for each mixin's dashboards.
-  folders:
-    kubernetes: Kubernetes
-    nodeExporter: Node Exporter
-    resourceOptimization: Resource Optimization
-    argocd: Argo CD
-    loki: Loki
-    alloy: Alloy
-    mimir: Mimir
-    tempo: Tempo
-
-# -- Prometheus alerting and recording rules configuration.
-prometheus:
-  # -- Deploy PrometheusRule CRDs.
-  enabled: true
-  # -- Namespace for PrometheusRule resources.
-  namespace: monitoring
-  # -- Labels added to PrometheusRule resources for Prometheus Operator discovery.
-  # Must match the ruleSelector configured in your Prometheus/Alloy.
-  labels: {}
+    # -- Namespace for PrometheusRule and GrafanaDashboard resources.
+    namespace: tempo
+    # -- Alert configuration.
+    alerts:
+      # -- Labels added to PrometheusRule resources for Prometheus/Alloy discovery.
+      # @default -- `{}`
+      labels: {}
+    # -- Dashboard configuration.
+    dashboards:
+      # -- Folder name in Grafana UI where dashboards will be organized.
+      folder: Tempo
+      # -- Label selector to target a specific Grafana instance (Grafana Operator).
+      # @default -- `{}`
+      instanceSelector:
+        matchLabels: {}

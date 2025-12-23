@@ -17,31 +17,38 @@ local extractDashboards(mixin) = {
 };
 
 local resourceOptimizationDashboards = import 'dashboards/resource-optimization/dashboards.libsonnet';
-local resourceOptimizationAlerts = import 'alerts/resource-optimization/alerts.libsonnet';
+local resourceOptimizationMixin = import 'alerts/resource-optimization/alerts.libsonnet';
 
 config {
-  kubernetesAlerts:: kubernetesMixin.prometheusAlerts,
-  kubernetesRules:: kubernetesMixin.prometheusRules,
-  nodeExporterAlerts:: nodeExporterMixin.prometheusAlerts,
-  nodeExporterRules:: nodeExporterMixin.prometheusRules,
-  argoCdAlerts:: argoCdMixin.prometheusAlerts,
-  argoCdRules:: argoCdMixin.prometheusRules,
-  lokiAlerts:: lokiMixin.prometheusAlerts,
-  lokiRules:: lokiMixin.prometheusRules,
-  alloyAlerts:: alloyMixin.prometheusAlerts,
-  mimirAlerts:: mimirMixin.prometheusAlerts,
-  mimirRules:: mimirMixin.prometheusRules,
-  tempoAlerts:: tempoMixin.prometheusAlerts,
-  tempoRules:: tempoMixin.prometheusRules,
-  resourceOptimizationAlerts:: resourceOptimizationAlerts.alerts,
+  // Combined alerts output for multi-file generation.
+  alerts:: {
+    'kubernetes.json': kubernetesMixin.prometheusAlerts,
+    'node-exporter.json': nodeExporterMixin.prometheusAlerts,
+    'argocd.json': argoCdMixin.prometheusAlerts,
+    'loki.json': lokiMixin.prometheusAlerts,
+    'alloy.json': alloyMixin.prometheusAlerts,
+    'mimir.json': mimirMixin.prometheusAlerts,
+    'tempo.json': tempoMixin.prometheusAlerts,
+    'resource-optimization.json': resourceOptimizationMixin.prometheusAlerts,
+  },
+
+  // Combined rules output for multi-file generation.
+  rules:: {
+    'kubernetes.json': kubernetesMixin.prometheusRules,
+    'node-exporter.json': nodeExporterMixin.prometheusRules,
+    'argocd.json': argoCdMixin.prometheusRules,
+    'loki.json': lokiMixin.prometheusRules,
+    'mimir.json': mimirMixin.prometheusRules,
+    'tempo.json': tempoMixin.prometheusRules,
+  },
 
   grafanaDashboards+::
-    (if $._config.enableKubernetesMixin then kubernetesMixin.grafanaDashboards else {}) +
-    (if $._config.enableNodeExporterMixin then nodeExporterMixin.grafanaDashboards else {}) +
-    (if $._config.enableResourceOptimizationMixin then resourceOptimizationDashboards else {}) +
-    (if $._config.enableArgoCdMixin then argoCdMixin.grafanaDashboards else {}) +
-    (if $._config.enableLokiMixin then lokiMixin.grafanaDashboards else {}) +
-    (if $._config.enableAlloyMixin then extractDashboards(alloyMixin) else {}) +
-    (if $._config.enableMimirMixin then extractDashboards(mimirMixin) else {}) +
-    (if $._config.enableTempoMixin then extractDashboards(tempoMixin) else {}),
+    kubernetesMixin.grafanaDashboards +
+    nodeExporterMixin.grafanaDashboards +
+    resourceOptimizationDashboards +
+    argoCdMixin.grafanaDashboards +
+    lokiMixin.grafanaDashboards +
+    extractDashboards(alloyMixin) +
+    extractDashboards(mimirMixin) +
+    extractDashboards(tempoMixin),
 }

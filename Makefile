@@ -1,7 +1,8 @@
-.PHONY: all clean deps build dashboards alerts lint
+.PHONY: all clean deps build dashboards alerts rules lint
 
 JSONNET_DIR := jsonnet
 CHART_DIR := chart
+ALERTS_DIR := $(CHART_DIR)/alerts
 DASHBOARDS_DIR := $(CHART_DIR)/dashboards
 RULES_DIR := $(CHART_DIR)/rules
 
@@ -21,7 +22,7 @@ update:
 	cd $(JSONNET_DIR) && $(JB) update
 
 # Build all outputs
-build: dashboards alerts
+build: dashboards alerts rules
 
 # Generate dashboards JSON
 dashboards:
@@ -30,60 +31,19 @@ dashboards:
 	$(JSONNET) -J $(JSONNET_DIR)/vendor -m $(DASHBOARDS_DIR) \
 		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").grafanaDashboards'
 
-# Generate alert rules YAML (per-mixin files)
+# Generate alert rules JSON
 alerts:
+	@mkdir -p $(ALERTS_DIR)
+	@echo "Generating alerts..."
+	$(JSONNET) -J $(JSONNET_DIR)/vendor -m $(ALERTS_DIR) \
+		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").alerts'
+
+# Generate recording rules JSON
+rules:
 	@mkdir -p $(RULES_DIR)
-	@echo "Generating alerts and rules..."
-	# Kubernetes mixin
-	$(JSONNET) -J $(JSONNET_DIR)/vendor \
-		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").kubernetesAlerts' \
-		| yq -P > $(RULES_DIR)/kubernetes-alerts.yaml
-	$(JSONNET) -J $(JSONNET_DIR)/vendor \
-		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").kubernetesRules' \
-		| yq -P > $(RULES_DIR)/kubernetes-rules.yaml
-	# Node Exporter mixin
-	$(JSONNET) -J $(JSONNET_DIR)/vendor \
-		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").nodeExporterAlerts' \
-		| yq -P > $(RULES_DIR)/node-exporter-alerts.yaml
-	$(JSONNET) -J $(JSONNET_DIR)/vendor \
-		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").nodeExporterRules' \
-		| yq -P > $(RULES_DIR)/node-exporter-rules.yaml
-	# ArgoCD mixin
-	$(JSONNET) -J $(JSONNET_DIR)/vendor \
-		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").argoCdAlerts' \
-		| yq -P > $(RULES_DIR)/argocd-alerts.yaml
-	$(JSONNET) -J $(JSONNET_DIR)/vendor \
-		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").argoCdRules' \
-		| yq -P > $(RULES_DIR)/argocd-rules.yaml
-	# Loki mixin
-	$(JSONNET) -J $(JSONNET_DIR)/vendor \
-		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").lokiAlerts' \
-		| yq -P > $(RULES_DIR)/loki-alerts.yaml
-	$(JSONNET) -J $(JSONNET_DIR)/vendor \
-		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").lokiRules' \
-		| yq -P > $(RULES_DIR)/loki-rules.yaml
-	# Alloy mixin (no rules, only alerts)
-	$(JSONNET) -J $(JSONNET_DIR)/vendor \
-		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").alloyAlerts' \
-		| yq -P > $(RULES_DIR)/alloy-alerts.yaml
-	# Mimir mixin
-	$(JSONNET) -J $(JSONNET_DIR)/vendor \
-		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").mimirAlerts' \
-		| yq -P > $(RULES_DIR)/mimir-alerts.yaml
-	$(JSONNET) -J $(JSONNET_DIR)/vendor \
-		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").mimirRules' \
-		| yq -P > $(RULES_DIR)/mimir-rules.yaml
-	# Tempo mixin
-	$(JSONNET) -J $(JSONNET_DIR)/vendor \
-		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").tempoAlerts' \
-		| yq -P > $(RULES_DIR)/tempo-alerts.yaml
-	$(JSONNET) -J $(JSONNET_DIR)/vendor \
-		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").tempoRules' \
-		| yq -P > $(RULES_DIR)/tempo-rules.yaml
-	# Resource Optimization mixin
-	$(JSONNET) -J $(JSONNET_DIR)/vendor \
-		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").resourceOptimizationAlerts' \
-		| yq -P > $(RULES_DIR)/resource-optimization-alerts.yaml
+	@echo "Generating recording rules..."
+	$(JSONNET) -J $(JSONNET_DIR)/vendor -m $(RULES_DIR) \
+		-e '(import "$(JSONNET_DIR)/mixin.libsonnet").rules'
 
 # Format jsonnet files
 fmt:
@@ -97,8 +57,7 @@ lint:
 
 # Clean generated files
 clean:
-	rm -rf $(DASHBOARDS_DIR) $(RULES_DIR)
-	rm -rf $(JSONNET_DIR)/vendor
+	rm -rf $(ALERTS_DIR) $(DASHBOARDS_DIR) $(RULES_DIR)
 
 # Helm package
 package: build

@@ -1,52 +1,52 @@
-{{- if .Values.grafana.enabled }}
 {{- $root := . }}
 {{- range $path, $_ := .Files.Glob "dashboards/*.json" }}
 {{- $name := $path | base | trimSuffix ".json" }}
 
-{{- /* Check mixin enablement and folder based on dashboard name */}}
-{{- $enabled := true }}
-{{- $folder := "" }}
+{{- /* Check mixin enablement and config based on dashboard name */}}
+{{- $enabled := false }}
+{{- $mixin := dict }}
 {{- if hasPrefix "argo-cd-" $name }}
   {{- $enabled = $root.Values.mixins.argocd.enabled }}
-  {{- $folder = $root.Values.grafana.folders.argocd }}
+  {{- $mixin = $root.Values.mixins.argocd }}
 {{- else if eq $name "nodes" }}
   {{- /* Linux nodes dashboard */}}
   {{- $enabled = and $root.Values.mixins.nodeExporter.enabled $root.Values.mixins.nodeExporter.platforms.linux }}
-  {{- $folder = $root.Values.grafana.folders.nodeExporter }}
+  {{- $mixin = $root.Values.mixins.nodeExporter }}
 {{- else if eq $name "nodes-darwin" }}
   {{- /* Darwin/macOS nodes dashboard */}}
   {{- $enabled = and $root.Values.mixins.nodeExporter.enabled $root.Values.mixins.nodeExporter.platforms.darwin }}
-  {{- $folder = $root.Values.grafana.folders.nodeExporter }}
+  {{- $mixin = $root.Values.mixins.nodeExporter }}
 {{- else if eq $name "nodes-aix" }}
   {{- /* AIX nodes dashboard */}}
   {{- $enabled = and $root.Values.mixins.nodeExporter.enabled $root.Values.mixins.nodeExporter.platforms.aix }}
-  {{- $folder = $root.Values.grafana.folders.nodeExporter }}
+  {{- $mixin = $root.Values.mixins.nodeExporter }}
 {{- else if hasPrefix "node-" $name }}
   {{- /* USE Method dashboards (platform-agnostic) */}}
   {{- $enabled = $root.Values.mixins.nodeExporter.enabled }}
-  {{- $folder = $root.Values.grafana.folders.nodeExporter }}
+  {{- $mixin = $root.Values.mixins.nodeExporter }}
 {{- else if eq $name "pod-optimization" }}
   {{- $enabled = $root.Values.mixins.resourceOptimization.enabled }}
-  {{- $folder = $root.Values.grafana.folders.resourceOptimization }}
+  {{- $mixin = $root.Values.mixins.resourceOptimization }}
 {{- else if contains "windows" $name }}
   {{- /* Windows dashboards (part of kubernetes-mixin) */}}
   {{- $enabled = and $root.Values.mixins.kubernetes.enabled $root.Values.mixins.kubernetes.windows.enabled }}
-  {{- $folder = $root.Values.grafana.folders.kubernetes }}
+  {{- $mixin = $root.Values.mixins.kubernetes }}
 {{- else if hasPrefix "loki-" $name }}
   {{- $enabled = $root.Values.mixins.loki.enabled }}
-  {{- $folder = $root.Values.grafana.folders.loki }}
+  {{- $mixin = $root.Values.mixins.loki }}
 {{- else if hasPrefix "alloy-" $name }}
   {{- $enabled = $root.Values.mixins.alloy.enabled }}
-  {{- $folder = $root.Values.grafana.folders.alloy }}
+  {{- $mixin = $root.Values.mixins.alloy }}
 {{- else if hasPrefix "mimir-" $name }}
   {{- $enabled = $root.Values.mixins.mimir.enabled }}
-  {{- $folder = $root.Values.grafana.folders.mimir }}
+  {{- $mixin = $root.Values.mixins.mimir }}
 {{- else if hasPrefix "tempo-" $name }}
   {{- $enabled = $root.Values.mixins.tempo.enabled }}
-  {{- $folder = $root.Values.grafana.folders.tempo }}
+  {{- $mixin = $root.Values.mixins.tempo }}
 {{- else }}
+  {{- /* Default to kubernetes mixin */}}
   {{- $enabled = $root.Values.mixins.kubernetes.enabled }}
-  {{- $folder = $root.Values.grafana.folders.kubernetes }}
+  {{- $mixin = $root.Values.mixins.kubernetes }}
 {{- end }}
 
 {{- if $enabled }}
@@ -55,15 +55,14 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   name: {{ $name }}
-  namespace: {{ $root.Values.grafana.namespace }}
+  namespace: {{ $mixin.namespace }}
   labels:
     {{- include "gitops-mixin.labels" $root | nindent 4 }}
 spec:
-  folder: {{ $folder }}
+  folder: {{ $mixin.dashboards.folder }}
   instanceSelector:
-    {{- toYaml $root.Values.grafana.instanceSelector | nindent 4 }}
+    {{- toYaml $mixin.dashboards.instanceSelector | nindent 4 }}
   json: |
     {{- $root.Files.Get $path | nindent 4 }}
-{{- end }}
 {{- end }}
 {{- end }}

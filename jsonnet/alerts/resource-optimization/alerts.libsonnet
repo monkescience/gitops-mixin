@@ -1,6 +1,6 @@
 // Custom alerts for gitops-mixin
 {
-  alerts: {
+  prometheusAlerts: {
     groups: [
       {
         name: 'custom.rules',

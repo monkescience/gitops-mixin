@@ -1,25 +1,5 @@
 {
   _config+:: {
-    enableKubernetesMixin: true,
-    enableNodeExporterMixin: true,
-    enableResourceOptimizationMixin: true,
-    enableArgoCdMixin: true,
-    enableLokiMixin: true,
-    enableAlloyMixin: true,
-    enableMimirMixin: true,
-    enableTempoMixin: true,
-
-    grafanaFolders: {
-      kubernetes: 'Kubernetes',
-      nodeExporter: 'Node Exporter',
-      resourceOptimization: 'Resource Optimization',
-      argocd: 'Argo CD',
-      loki: 'Loki',
-      alloy: 'Alloy',
-      mimir: 'Mimir',
-      tempo: 'Tempo',
-    },
-
     kubernetesMixinConfig: {
       cadvisorSelector: 'job="cadvisor"',
       kubeletSelector: 'job="kubelet"',

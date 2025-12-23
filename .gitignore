@@ -2,6 +2,7 @@
 jsonnet/vendor/
 
 # Generated chart files
+chart/alerts/
 chart/dashboards/
 chart/rules/
 

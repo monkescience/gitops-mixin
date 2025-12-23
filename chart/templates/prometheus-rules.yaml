@@ -1,19 +1,37 @@
-{{- if .Values.prometheus.enabled }}
 {{- $root := . }}
-{{- range $path, $_ := .Files.Glob "rules/*.yaml" }}
-{{- $filename := $path | base | trimSuffix ".yaml" }}
+
+{{- /* Process alert rules */}}
+{{- range $path, $_ := .Files.Glob "alerts/*.json" }}
+{{- $filename := $path | base | trimSuffix ".json" }}
 {{- $content := $root.Files.Get $path | fromYaml }}
 
-{{- /* Check mixin enablement based on filename prefix */}}
-{{- $enabled := true }}
-{{- if hasPrefix "kubernetes-" $filename }}
+{{- /* Check mixin enablement based on filename */}}
+{{- $enabled := false }}
+{{- $mixin := dict }}
+{{- if eq $filename "kubernetes" }}
   {{- $enabled = $root.Values.mixins.kubernetes.enabled }}
-{{- else if hasPrefix "node-exporter-" $filename }}
+  {{- $mixin = $root.Values.mixins.kubernetes }}
+{{- else if eq $filename "node-exporter" }}
   {{- $enabled = $root.Values.mixins.nodeExporter.enabled }}
-{{- else if hasPrefix "argocd-" $filename }}
+  {{- $mixin = $root.Values.mixins.nodeExporter }}
+{{- else if eq $filename "argocd" }}
   {{- $enabled = $root.Values.mixins.argocd.enabled }}
-{{- else if hasPrefix "resource-optimization-" $filename }}
+  {{- $mixin = $root.Values.mixins.argocd }}
+{{- else if eq $filename "resource-optimization" }}
   {{- $enabled = $root.Values.mixins.resourceOptimization.enabled }}
+  {{- $mixin = $root.Values.mixins.resourceOptimization }}
+{{- else if eq $filename "loki" }}
+  {{- $enabled = $root.Values.mixins.loki.enabled }}
+  {{- $mixin = $root.Values.mixins.loki }}
+{{- else if eq $filename "alloy" }}
+  {{- $enabled = $root.Values.mixins.alloy.enabled }}
+  {{- $mixin = $root.Values.mixins.alloy }}
+{{- else if eq $filename "mimir" }}
+  {{- $enabled = $root.Values.mixins.mimir.enabled }}
+  {{- $mixin = $root.Values.mixins.mimir }}
+{{- else if eq $filename "tempo" }}
+  {{- $enabled = $root.Values.mixins.tempo.enabled }}
+  {{- $mixin = $root.Values.mixins.tempo }}
 {{- end }}
 
 {{- if $enabled }}
@@ -21,16 +39,58 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: {{ $content.name | default $filename }}
-  namespace: {{ $root.Values.prometheus.namespace }}
+  name: {{ $content.name | default (printf "%s-alerts" $filename) }}
+  namespace: {{ $mixin.namespace }}
   labels:
     {{- include "gitops-mixin.labels" $root | nindent 4 }}
-    {{- with $root.Values.prometheus.labels }}
+    {{- with $mixin.alerts.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
   groups:
     {{- toYaml $content.groups | nindent 4 }}
 {{- end }}
+{{- end }}
+
+{{- /* Process recording rules */}}
+{{- range $path, $_ := .Files.Glob "rules/*.json" }}
+{{- $filename := $path | base | trimSuffix ".json" }}
+{{- $content := $root.Files.Get $path | fromYaml }}
+
+{{- /* Check mixin enablement based on filename */}}
+{{- $enabled := false }}
+{{- $mixin := dict }}
+{{- if eq $filename "kubernetes" }}
+  {{- $enabled = $root.Values.mixins.kubernetes.enabled }}
+  {{- $mixin = $root.Values.mixins.kubernetes }}
+{{- else if eq $filename "node-exporter" }}
+  {{- $enabled = $root.Values.mixins.nodeExporter.enabled }}
+  {{- $mixin = $root.Values.mixins.nodeExporter }}
+{{- else if eq $filename "argocd" }}
+  {{- $enabled = $root.Values.mixins.argocd.enabled }}
+  {{- $mixin = $root.Values.mixins.argocd }}
+{{- else if eq $filename "loki" }}
+  {{- $enabled = $root.Values.mixins.loki.enabled }}
+  {{- $mixin = $root.Values.mixins.loki }}
+{{- else if eq $filename "mimir" }}
+  {{- $enabled = $root.Values.mixins.mimir.enabled }}
+  {{- $mixin = $root.Values.mixins.mimir }}
+{{- else if eq $filename "tempo" }}
+  {{- $enabled = $root.Values.mixins.tempo.enabled }}
+  {{- $mixin = $root.Values.mixins.tempo }}
+{{- end }}
+
+{{- if $enabled }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ $content.name | default (printf "%s-rules" $filename) }}
+  namespace: {{ $mixin.namespace }}
+  labels:
+    {{- include "gitops-mixin.labels" $root | nindent 4 }}
+spec:
+  groups:
+    {{- toYaml $content.groups | nindent 4 }}
 {{- end }}
 {{- end }}
