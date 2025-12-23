@@ -11,14 +11,14 @@ jobs:
     steps:
       - name: Generate GitHub App token
         id: generate-token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
         with:
           owner: monkescience
           app-id: ${{ vars.RENOVATE_APP_ID }}
           private-key: ${{ secrets.RENOVATE_APP_PRIVATE_KEY }}
 
       - name: Renovate
-        uses: renovatebot/github-action@v44
+        uses: renovatebot/github-action@822441559e94f98b67b82d97ab89fe3003b0a247 # v44.2.0
         with:
           token: ${{ steps.generate-token.outputs.token }}
         env:
