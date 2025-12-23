@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.3.0](https://github.com/monkescience/gitops-mixin/compare/0.2.0...0.3.0) (2025-12-23)
+
+
+### Features
+
+* add Alloy, Mimir, and Tempo mixins with alerts, rules, and dashboards ([fc71f7c](https://github.com/monkescience/gitops-mixin/commit/fc71f7cc812e6c208d5942b22c77cb659e925cd3))
+* add Loki mixin with alerts, rules, and platform-specific dashboards ([cf60a45](https://github.com/monkescience/gitops-mixin/commit/cf60a457947329a45598505909a21080f303819d))
+* add Renovate automation workflow and configuration ([4e7eb0a](https://github.com/monkescience/gitops-mixin/commit/4e7eb0acb05dbf78e6f9d30a2a2b9056bd79b860))
+* enable Windows and additional platform-specific dashboards, refine Grafana and Prometheus configuration ([98671af](https://github.com/monkescience/gitops-mixin/commit/98671afb741b5b26a6a35cdc51d21359b0013b6c))
+* enhance mixin configuration for Grafana and Prometheus with improved alert and dashboard management ([bd12558](https://github.com/monkescience/gitops-mixin/commit/bd125582ab75a6fd64bda8077b225597f6697794))
+* extend resource optimization alerts with overutilization rules and update underutilization thresholds ([e3a8b99](https://github.com/monkescience/gitops-mixin/commit/e3a8b99fa68aa21a799480cd738c912382691899))
+
+
+### Bug Fixes
+
+* simplify Grafana instance selector configuration in values.yaml ([15d2d85](https://github.com/monkescience/gitops-mixin/commit/15d2d85a8979eaa57f66a7c561bd1ef18fbac028))
+* update job selectors in Jsonnet config to simplify and standardize naming conventions ([1e71864](https://github.com/monkescience/gitops-mixin/commit/1e718645fbce43f7ed092a620d959d52f9d2c8bf))
+
 ## [0.2.0](https://github.com/monkescience/gitops-mixin/compare/0.1.0...0.2.0) (2025-12-13)
 
 
