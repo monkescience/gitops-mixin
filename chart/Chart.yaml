@@ -2,8 +2,8 @@ apiVersion: v2
 name: gitops-mixin
 description: Grafana dashboards and Prometheus alerts for Kubernetes monitoring
 type: application
-version: 0.3.0
-appVersion: 0.3.0
+version: 0.4.0
+appVersion: 0.4.0
 keywords:
   - monitoring
   - grafana
