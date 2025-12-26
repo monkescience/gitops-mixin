@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/monkescience/gitops-mixin/compare/0.5.0...0.6.0) (2025-12-26)
+
+
+### Features
+
+* add support for cross-namespace Grafana dashboard imports ([c959667](https://github.com/monkescience/gitops-mixin/commit/c95966724bc49ccaf22385b43b3bc7b0bc75290e))
+
 ## [0.5.0](https://github.com/monkescience/gitops-mixin/compare/0.4.0...0.5.0) (2025-12-26)
 
 
