@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/monkescience/gitops-mixin/compare/0.4.0...0.5.0) (2025-12-26)
+
+
+### Features
+
+* improve instanceSelector handling in Grafana dashboard configuration ([517857c](https://github.com/monkescience/gitops-mixin/commit/517857c4059296f0afe4ecf7e8345614bd05ef0e))
+
 ## [0.4.0](https://github.com/monkescience/gitops-mixin/compare/0.3.0...0.4.0) (2025-12-26)
 
 
