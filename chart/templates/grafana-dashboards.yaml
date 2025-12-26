@@ -59,6 +59,7 @@ metadata:
   labels:
     {{- include "gitops-mixin.labels" $root | nindent 4 }}
 spec:
+  allowCrossNamespaceImport: {{ $root.Values.allowCrossNamespaceImport }}
   folder: {{ $mixin.dashboards.folder }}
   {{- $selector := dig "instanceSelector" "matchLabels" dict $mixin.dashboards }}
   {{- if $selector }}

@@ -1,3 +1,6 @@
+# -- Allow dashboards to be discovered by Grafana instances in other namespaces.
+allowCrossNamespaceImport: true
+
 # -- Mixin configuration.
 # Each mixin provides Grafana dashboards and Prometheus alerting/recording rules.
 # All configuration is per-mixin for full control over namespaces, labels, and folders.
