@@ -19,9 +19,10 @@ mixins:
       # -- Folder name in Grafana UI where dashboards will be organized.
       folder: Kubernetes
       # -- Label selector to target a specific Grafana instance (Grafana Operator).
-      # @default -- `{}`
-      instanceSelector:
-        matchLabels: {}
+      # If omitted, dashboards match all Grafana instances.
+      # instanceSelector:
+      #   matchLabels:
+      #     app.kubernetes.io/name: grafana
     # -- Windows-specific dashboard configuration.
     windows:
       # -- Enable Windows node and workload dashboards.
@@ -44,9 +45,10 @@ mixins:
       # -- Folder name in Grafana UI where dashboards will be organized.
       folder: Node Exporter
       # -- Label selector to target a specific Grafana instance (Grafana Operator).
-      # @default -- `{}`
-      instanceSelector:
-        matchLabels: {}
+      # If omitted, dashboards match all Grafana instances.
+      # instanceSelector:
+      #   matchLabels:
+      #     app.kubernetes.io/name: grafana
     # -- Platform-specific dashboard configuration.
     platforms:
       # -- Enable Linux node dashboards.
@@ -73,9 +75,10 @@ mixins:
       # -- Folder name in Grafana UI where dashboards will be organized.
       folder: Resource Optimization
       # -- Label selector to target a specific Grafana instance (Grafana Operator).
-      # @default -- `{}`
-      instanceSelector:
-        matchLabels: {}
+      # If omitted, dashboards match all Grafana instances.
+      # instanceSelector:
+      #   matchLabels:
+      #     app.kubernetes.io/name: grafana
 
   # -- Argo CD mixin provides GitOps application and sync status dashboards.
   # Monitors application health, sync status, and operational metrics.
@@ -94,9 +97,10 @@ mixins:
       # -- Folder name in Grafana UI where dashboards will be organized.
       folder: Argo CD
       # -- Label selector to target a specific Grafana instance (Grafana Operator).
-      # @default -- `{}`
-      instanceSelector:
-        matchLabels: {}
+      # If omitted, dashboards match all Grafana instances.
+      # instanceSelector:
+      #   matchLabels:
+      #     app.kubernetes.io/name: grafana
 
   # -- Loki mixin provides log aggregation dashboards.
   # Monitors Loki components: distributors, ingesters, queriers, and compactors.
@@ -115,9 +119,10 @@ mixins:
       # -- Folder name in Grafana UI where dashboards will be organized.
       folder: Loki
       # -- Label selector to target a specific Grafana instance (Grafana Operator).
-      # @default -- `{}`
-      instanceSelector:
-        matchLabels: {}
+      # If omitted, dashboards match all Grafana instances.
+      # instanceSelector:
+      #   matchLabels:
+      #     app.kubernetes.io/name: grafana
 
   # -- Alloy mixin provides Grafana Alloy collector dashboards.
   # Monitors Alloy pipelines, components, and resource usage.
@@ -136,9 +141,10 @@ mixins:
       # -- Folder name in Grafana UI where dashboards will be organized.
       folder: Alloy
       # -- Label selector to target a specific Grafana instance (Grafana Operator).
-      # @default -- `{}`
-      instanceSelector:
-        matchLabels: {}
+      # If omitted, dashboards match all Grafana instances.
+      # instanceSelector:
+      #   matchLabels:
+      #     app.kubernetes.io/name: grafana
 
   # -- Mimir mixin provides metrics backend dashboards.
   # Monitors Mimir components: distributors, ingesters, queriers, compactors, and rulers.
@@ -157,9 +163,10 @@ mixins:
       # -- Folder name in Grafana UI where dashboards will be organized.
       folder: Mimir
       # -- Label selector to target a specific Grafana instance (Grafana Operator).
-      # @default -- `{}`
-      instanceSelector:
-        matchLabels: {}
+      # If omitted, dashboards match all Grafana instances.
+      # instanceSelector:
+      #   matchLabels:
+      #     app.kubernetes.io/name: grafana
 
   # -- Tempo mixin provides distributed tracing dashboards.
   # Monitors Tempo components: distributors, ingesters, queriers, and compactors.
@@ -178,6 +185,7 @@ mixins:
       # -- Folder name in Grafana UI where dashboards will be organized.
       folder: Tempo
       # -- Label selector to target a specific Grafana instance (Grafana Operator).
-      # @default -- `{}`
-      instanceSelector:
-        matchLabels: {}
+      # If omitted, dashboards match all Grafana instances.
+      # instanceSelector:
+      #   matchLabels:
+      #     app.kubernetes.io/name: grafana
