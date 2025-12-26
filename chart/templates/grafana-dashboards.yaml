@@ -60,9 +60,13 @@ metadata:
     {{- include "gitops-mixin.labels" $root | nindent 4 }}
 spec:
   folder: {{ $mixin.dashboards.folder }}
-  {{- with $mixin.dashboards.instanceSelector }}
+  {{- $selector := dig "instanceSelector" "matchLabels" dict $mixin.dashboards }}
+  {{- if $selector }}
   instanceSelector:
-    {{- toYaml . | nindent 4 }}
+    matchLabels:
+      {{- toYaml $selector | nindent 6 }}
+  {{- else }}
+  instanceSelector: {}
   {{- end }}
   json: |
     {{- $root.Files.Get $path | nindent 4 }}
