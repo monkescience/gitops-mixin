@@ -10,6 +10,10 @@ RULES_DIR := $(CHART_DIR)/rules
 JB := jb
 JSONNET := jsonnet
 JSONNETFMT := jsonnetfmt
+JSONNETLINT := jsonnet-lint
+
+# Source files (excludes vendor)
+JSONNET_SRC := $(shell find $(JSONNET_DIR) \( -name '*.libsonnet' -o -name '*.jsonnet' \) -not -path '*/vendor/*')
 
 all: deps build
 
@@ -47,13 +51,11 @@ rules:
 
 # Format jsonnet files
 fmt:
-	find $(JSONNET_DIR) -name '*.libsonnet' -o -name '*.jsonnet' | \
-		xargs -I {} $(JSONNETFMT) -i {}
+	@$(JSONNETFMT) -i $(JSONNET_SRC)
 
 # Lint jsonnet files
 lint:
-	find $(JSONNET_DIR) -name '*.libsonnet' -o -name '*.jsonnet' | \
-		xargs -I {} $(JSONNET) -J $(JSONNET_DIR)/vendor --lint {}
+	@for f in $(JSONNET_SRC); do $(JSONNETLINT) -J $(JSONNET_DIR)/vendor $$f || exit 1; done
 
 # Clean generated files
 clean:

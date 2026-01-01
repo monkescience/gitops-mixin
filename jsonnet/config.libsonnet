@@ -20,5 +20,18 @@
     alloyMixinConfig: {},
     mimirMixinConfig: {},
     tempoMixinConfig: {},
+
+    resourceOptimizationConfig: {
+      // Enable multi-cluster support (adds cluster label to aggregations).
+      showMultiCluster: true,
+      // Label name used for cluster identification.
+      clusterLabel: 'cluster',
+      // Additional label selector for filtering (empty = all pods).
+      // Example: 'app=~"myapp.*"' or 'team="platform"'
+      labelSelector: '',
+      // Namespace filter regex (empty = all namespaces).
+      // Example: 'kube-.*|default' to exclude system namespaces
+      namespaceSelector: '',
+    },
   },
 }
