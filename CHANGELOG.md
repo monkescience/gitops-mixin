@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.0](https://github.com/monkescience/gitops-mixin/compare/0.6.0...0.7.0) (2026-01-01)
+
+
+### Features
+
+* enhance resource optimization alerts and dashboards ([be3e0b9](https://github.com/monkescience/gitops-mixin/commit/be3e0b9804fba160c565e9c6ba79471d35b872e6))
+* update pod optimization dashboard with mappings and $__range adjustments ([b2c2e8d](https://github.com/monkescience/gitops-mixin/commit/b2c2e8d7156918d9b2327b73a9d0b3bb4d1b2b7a))
+
 ## [0.6.0](https://github.com/monkescience/gitops-mixin/compare/0.5.0...0.6.0) (2025-12-26)
 
 
