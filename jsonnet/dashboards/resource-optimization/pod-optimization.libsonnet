@@ -71,7 +71,7 @@ local statPanel(id, title, expr, thresholds) = {
 // Table panel field overrides for CPU.
 local cpuTableOverrides = [
   { matcher: { id: 'byName', options: 'Namespace' }, properties: [{ id: 'custom.width', value: 150 }] },
-  { matcher: { id: 'byName', options: 'Pod' }, properties: [{ id: 'custom.width', value: 250 }] },
+  { matcher: { id: 'byName', options: 'Pod' }, properties: [{ id: 'custom.width', value: 300 }] },
   { matcher: { id: 'byName', options: 'Request' }, properties: [
     { id: 'unit', value: 'suffix:m' },
     { id: 'custom.width', value: 90 },
@@ -147,7 +147,7 @@ local cpuTableOverrides = [
 // Table panel field overrides for Memory.
 local memoryTableOverrides = [
   { matcher: { id: 'byName', options: 'Namespace' }, properties: [{ id: 'custom.width', value: 150 }] },
-  { matcher: { id: 'byName', options: 'Pod' }, properties: [{ id: 'custom.width', value: 250 }] },
+  { matcher: { id: 'byName', options: 'Pod' }, properties: [{ id: 'custom.width', value: 300 }] },
   { matcher: { id: 'byName', options: 'Request' }, properties: [
     { id: 'unit', value: 'suffix:Mi' },
     { id: 'custom.width', value: 100 },
@@ -224,7 +224,7 @@ local memoryTableOverrides = [
 local tableTransformations = [
   { id: 'merge', options: {} },
   { id: 'organize', options: {
-    excludeByName: { Time: true },
+    excludeByName: { Time: true, cluster: true },
     indexByName: { namespace: 0, pod: 1, 'Value #request': 2, 'Value #limit': 3, 'Value #avg': 4, 'Value #p95': 5, 'Value #recommended': 6 },
     renameByName: { namespace: 'Namespace', pod: 'Pod', 'Value #request': 'Request', 'Value #limit': 'Limit', 'Value #avg': 'Avg Usage', 'Value #p95': 'P95 Usage', 'Value #recommended': 'Recommended' },
   } },
@@ -267,15 +267,57 @@ local tableTransformations = [
               'count(avg_over_time((100 * sum(container_memory_working_set_bytes{%s}) by (namespace,pod) / sum(kube_pod_container_resource_limits{%s}) by (namespace,pod))[$__range:]) > 70)' % [selector, limitSelector('memory')],
               [{ color: 'green', value: null }, { color: 'orange', value: 1 }, { color: 'red', value: 3 }]),
 
+    // Missing Requests Row
+    { collapsed: false, gridPos: { h: 1, w: 24, x: 0, y: 5 }, id: 150, title: 'Missing Resource Requests', type: 'row' },
+
+    // Missing Requests Table
+    {
+      datasource: { type: 'prometheus', uid: '${datasource}' },
+      description: 'Pods without CPU or memory resource requests defined. These pods cannot be optimized until requests are added.',
+      fieldConfig: {
+        defaults: {
+          custom: { align: 'auto', cellOptions: { type: 'auto' }, inspect: false, filterable: true },
+          mappings: [],
+          thresholds: { mode: 'absolute', steps: [{ color: 'orange', value: null }] },
+        },
+        overrides: [
+          { matcher: { id: 'byName', options: 'Namespace' }, properties: [{ id: 'custom.width', value: 150 }] },
+          { matcher: { id: 'byName', options: 'Pod' }, properties: [{ id: 'custom.width', value: 300 }] },
+          { matcher: { id: 'byName', options: 'Node' }, properties: [{ id: 'custom.width', value: 200 }] },
+        ],
+      },
+      gridPos: { h: 8, w: 24, x: 0, y: 6 },
+      id: 151,
+      options: { cellHeight: 'sm', footer: { countRows: true, fields: '', reducer: ['count'], show: true }, showHeader: true, sortBy: [{ desc: false, displayName: 'Namespace' }] },
+      targets: [
+        {
+          datasource: { type: 'prometheus', uid: '${datasource}' },
+          expr: '(kube_pod_info{%s} unless on(namespace, pod) sum by(namespace, pod) (kube_pod_container_resource_requests{%s})) or (kube_pod_info{%s} unless on(namespace, pod) sum by(namespace, pod) (kube_pod_container_resource_requests{%s}))' % [podSelector, requestSelector('cpu'), podSelector, requestSelector('memory')],
+          format: 'table',
+          instant: true,
+          refId: 'A',
+        },
+      ],
+      title: 'Pods Missing Resource Requests',
+      transformations: [
+        { id: 'filterFieldsByName', options: { include: { names: ['namespace', 'pod', 'node'] } } },
+        { id: 'organize', options: {
+          indexByName: { namespace: 0, pod: 1, node: 2 },
+          renameByName: { namespace: 'Namespace', pod: 'Pod', node: 'Node' },
+        } },
+      ],
+      type: 'table',
+    },
+
     // CPU Optimization Row
-    { collapsed: false, gridPos: { h: 1, w: 24, x: 0, y: 5 }, id: 200, title: 'CPU Optimization', type: 'row' },
+    { collapsed: false, gridPos: { h: 1, w: 24, x: 0, y: 14 }, id: 200, title: 'CPU Optimization', type: 'row' },
 
     // CPU Table
     {
       datasource: { type: 'prometheus', uid: '${datasource}' },
       description: 'Shows CPU resource optimization opportunities. Pods are sorted by utilization to help identify over-provisioned resources.',
       fieldConfig: { defaults: { custom: { align: 'auto', cellOptions: { type: 'auto' }, inspect: false, filterable: true }, mappings: [], thresholds: { mode: 'absolute', steps: [{ color: 'green', value: null }] } }, overrides: cpuTableOverrides },
-      gridPos: { h: 12, w: 24, x: 0, y: 6 },
+      gridPos: { h: 16, w: 24, x: 0, y: 15 },
       id: 201,
       options: { cellHeight: 'sm', footer: { countRows: false, fields: ['Request', 'Recommended', 'Potential Savings'], reducer: ['sum'], show: true }, showHeader: true, sortBy: [{ desc: false, displayName: 'Utilization' }] },
       targets: [
@@ -291,14 +333,14 @@ local tableTransformations = [
     },
 
     // Memory Optimization Row
-    { collapsed: false, gridPos: { h: 1, w: 24, x: 0, y: 18 }, id: 300, title: 'Memory Optimization', type: 'row' },
+    { collapsed: false, gridPos: { h: 1, w: 24, x: 0, y: 31 }, id: 300, title: 'Memory Optimization', type: 'row' },
 
     // Memory Table
     {
       datasource: { type: 'prometheus', uid: '${datasource}' },
       description: 'Shows Memory resource optimization opportunities. Pods are sorted by utilization to help identify over-provisioned resources.',
       fieldConfig: { defaults: { custom: { align: 'auto', cellOptions: { type: 'auto' }, inspect: false, filterable: true }, mappings: [], thresholds: { mode: 'absolute', steps: [{ color: 'green', value: null }] } }, overrides: memoryTableOverrides },
-      gridPos: { h: 12, w: 24, x: 0, y: 19 },
+      gridPos: { h: 16, w: 24, x: 0, y: 32 },
       id: 301,
       options: { cellHeight: 'sm', footer: { countRows: false, fields: ['Request', 'Recommended', 'Potential Savings'], reducer: ['sum'], show: true }, showHeader: true, sortBy: [{ desc: false, displayName: 'Utilization' }] },
       targets: [
@@ -316,15 +358,15 @@ local tableTransformations = [
     // Historical Trends Row (collapsed)
     {
       collapsed: true,
-      gridPos: { h: 1, w: 24, x: 0, y: 31 },
+      gridPos: { h: 1, w: 24, x: 0, y: 48 },
       id: 400,
       panels: [
         // CPU Utilization Over Time
         {
           datasource: { type: 'prometheus', uid: '${datasource}' },
           description: 'CPU utilization percentage over time. Values below 30% indicate potential over-provisioning.',
-          fieldConfig: { defaults: { color: { mode: 'palette-classic' }, custom: { drawStyle: 'line', fillOpacity: 10, lineWidth: 1, showPoints: 'never', spanNulls: true }, unit: 'percentunit', min: 0, max: 1, decimals: 1 } },
-          gridPos: { h: 8, w: 24, x: 0, y: 32 },
+          fieldConfig: { defaults: { color: { mode: 'palette-classic' }, custom: { drawStyle: 'line', fillOpacity: 10, lineWidth: 1, showPoints: 'never', spanNulls: true }, unit: 'percentunit', min: 0, decimals: 1 } },
+          gridPos: { h: 12, w: 24, x: 0, y: 49 },
           id: 401,
           options: { legend: { calcs: ['mean', 'max'], displayMode: 'table', placement: 'right' }, tooltip: { mode: 'multi', sort: 'desc' } },
           targets: [{ datasource: { type: 'prometheus', uid: '${datasource}' }, expr: 'sum(rate(container_cpu_usage_seconds_total{%s}[5m])) by (namespace,pod) / sum(kube_pod_container_resource_requests{%s}) by (namespace,pod)' % [selector, requestSelector('cpu')], legendFormat: '{{namespace}}/{{pod}}', refId: 'A' }],
@@ -335,8 +377,8 @@ local tableTransformations = [
         {
           datasource: { type: 'prometheus', uid: '${datasource}' },
           description: 'Memory utilization percentage over time. Values below 30% indicate potential over-provisioning.',
-          fieldConfig: { defaults: { color: { mode: 'palette-classic' }, custom: { drawStyle: 'line', fillOpacity: 10, lineWidth: 1, showPoints: 'never', spanNulls: true }, unit: 'percentunit', min: 0, max: 1, decimals: 1 } },
-          gridPos: { h: 8, w: 24, x: 0, y: 40 },
+          fieldConfig: { defaults: { color: { mode: 'palette-classic' }, custom: { drawStyle: 'line', fillOpacity: 10, lineWidth: 1, showPoints: 'never', spanNulls: true }, unit: 'percentunit', min: 0, decimals: 1 } },
+          gridPos: { h: 12, w: 24, x: 0, y: 61 },
           id: 402,
           options: { legend: { calcs: ['mean', 'max'], displayMode: 'table', placement: 'right' }, tooltip: { mode: 'multi', sort: 'desc' } },
           targets: [{ datasource: { type: 'prometheus', uid: '${datasource}' }, expr: 'sum(container_memory_working_set_bytes{%s}) by (namespace,pod) / sum(kube_pod_container_resource_requests{%s}) by (namespace,pod)' % [selector, requestSelector('memory')], legendFormat: '{{namespace}}/{{pod}}', refId: 'A' }],
@@ -348,7 +390,7 @@ local tableTransformations = [
           datasource: { type: 'prometheus', uid: '${datasource}' },
           description: 'Pod restarts in the last hour. Frequent restarts may indicate memory pressure or resource constraints.',
           fieldConfig: { defaults: { color: { mode: 'palette-classic' }, custom: { drawStyle: 'line', fillOpacity: 0, lineWidth: 1, showPoints: 'never' }, unit: 'none', decimals: 0 } },
-          gridPos: { h: 8, w: 24, x: 0, y: 48 },
+          gridPos: { h: 12, w: 24, x: 0, y: 73 },
           id: 403,
           options: { legend: { calcs: ['max'], displayMode: 'table', placement: 'right' }, tooltip: { mode: 'multi', sort: 'desc' } },
           targets: [{ datasource: { type: 'prometheus', uid: '${datasource}' }, expr: 'increase(kube_pod_container_status_restarts_total{%s}[1h]) > 0' % podSelector, legendFormat: '{{namespace}}/{{pod}}', refId: 'A' }],
@@ -364,7 +406,7 @@ local tableTransformations = [
   schemaVersion: 39,
   templating: {
     list: [
-      { current: { text: 'prometheus', value: 'prometheus' }, includeAll: false, label: 'Datasource', name: 'datasource', options: [], query: 'prometheus', refresh: 1, type: 'datasource' },
+      { includeAll: false, label: 'Datasource', name: 'datasource', options: [], query: 'prometheus', refresh: 1, type: 'datasource' },
       { datasource: { type: 'prometheus', uid: '${datasource}' }, hide: 0, includeAll: false, label: cfg.clusterLabel, name: cfg.clusterLabel, options: [], query: 'label_values(up{job="kube-state-metrics"}, %s)' % cfg.clusterLabel, refresh: 2, sort: 1, type: 'query' },
       { current: { text: 'All', value: '$__all' }, datasource: { type: 'prometheus', uid: '${datasource}' }, definition: 'label_values(kube_pod_info{%s="$%s"}, namespace)' % [cfg.clusterLabel, cfg.clusterLabel], includeAll: true, label: 'Namespace', multi: true, name: 'namespace', options: [], query: 'label_values(kube_pod_info{%s="$%s"}, namespace)' % [cfg.clusterLabel, cfg.clusterLabel], refresh: 2, sort: 1, type: 'query' },
     ],
