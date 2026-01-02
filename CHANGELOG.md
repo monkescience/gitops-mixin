@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/monkescience/gitops-mixin/compare/0.7.0...0.8.0) (2026-01-02)
+
+
+### Features
+
+* add missing resource requests table to pod optimization dashboard ([fdc2286](https://github.com/monkescience/gitops-mixin/commit/fdc22865a202c53cd913a60970d453b7b91787e1))
+
 ## [0.7.0](https://github.com/monkescience/gitops-mixin/compare/0.6.0...0.7.0) (2026-01-01)
 
 
