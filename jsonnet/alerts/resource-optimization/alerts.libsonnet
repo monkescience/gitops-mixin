@@ -11,6 +11,13 @@ local selectorParts = std.filter(function(s) s != '', [
 ]);
 local selector = std.join(',', selectorParts);
 
+// Pod selector (no container filter) for kube_pod_* metrics.
+local podSelectorParts = std.filter(function(s) s != '', [
+  if cfg.labelSelector != '' then cfg.labelSelector else '',
+  if cfg.namespaceSelector != '' then 'namespace=~"%s"' % cfg.namespaceSelector else '',
+]);
+local podSelector = std.join(',', podSelectorParts);
+
 // Cluster label for by() clauses.
 local clusterBy = if cfg.showMultiCluster then ',' + cfg.clusterLabel else '';
 
@@ -123,6 +130,20 @@ else '';
               )[1h:]) > 80
             ||| % [selector, clusterBy, selector, clusterBy],
             'for': '15m',
+            labels: {
+              severity: 'warning',
+            },
+          },
+          {
+            alert: 'PodOOMKilled',
+            annotations: {
+              description: 'Container {{ $labels.container }} in pod {{ $labels.namespace }}/{{ $labels.pod }}%s was OOMKilled. Increase memory limits.' % clusterDescription,
+              summary: 'Pod container was OOMKilled.',
+            },
+            expr: |||
+              changes(kube_pod_container_status_last_terminated_reason{%sreason="OOMKilled"}[5m]) > 0
+            ||| % (if podSelector != '' then podSelector + ',' else ''),
+            'for': '0m',
             labels: {
               severity: 'warning',
             },

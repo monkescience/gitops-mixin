@@ -70,34 +70,28 @@ local statPanel(id, title, expr, thresholds) = {
 
 // Table panel field overrides for CPU.
 local cpuTableOverrides = [
-  { matcher: { id: 'byName', options: 'Namespace' }, properties: [{ id: 'custom.width', value: 150 }] },
-  { matcher: { id: 'byName', options: 'Pod' }, properties: [{ id: 'custom.width', value: 300 }] },
   { matcher: { id: 'byName', options: 'Request' }, properties: [
     { id: 'unit', value: 'suffix:m' },
-    { id: 'custom.width', value: 90 },
     { id: 'decimals', value: 0 },
     { id: 'custom.cellOptions', value: { type: 'color-text' } },
     { id: 'color', value: { mode: 'fixed', fixedColor: 'text' } },
   ] },
   { matcher: { id: 'byName', options: 'Limit' }, properties: [
     { id: 'unit', value: 'suffix:m' },
-    { id: 'custom.width', value: 90 },
     { id: 'decimals', value: 0 },
     { id: 'custom.cellOptions', value: { type: 'color-text' } },
     { id: 'color', value: { mode: 'fixed', fixedColor: 'text' } },
   ] },
-  { matcher: { id: 'byName', options: 'Avg Usage' }, properties: [{ id: 'unit', value: 'suffix:m' }, { id: 'custom.width', value: 100 }, { id: 'decimals', value: 1 }] },
-  { matcher: { id: 'byName', options: 'P95 Usage' }, properties: [{ id: 'unit', value: 'suffix:m' }, { id: 'custom.width', value: 100 }, { id: 'decimals', value: 1 }] },
+  { matcher: { id: 'byName', options: 'Avg Usage' }, properties: [{ id: 'unit', value: 'suffix:m' }, { id: 'decimals', value: 1 }] },
+  { matcher: { id: 'byName', options: 'P95 Usage' }, properties: [{ id: 'unit', value: 'suffix:m' }, { id: 'decimals', value: 1 }] },
   { matcher: { id: 'byName', options: 'Recommended' }, properties: [
     { id: 'unit', value: 'suffix:m' },
-    { id: 'custom.width', value: 110 },
     { id: 'decimals', value: 0 },
     { id: 'custom.cellOptions', value: { type: 'color-text' } },
     { id: 'color', value: { mode: 'fixed', fixedColor: 'super-light-blue' } },
   ] },
   { matcher: { id: 'byName', options: 'Utilization' }, properties: [
     { id: 'unit', value: 'percentunit' },
-    { id: 'custom.width', value: 120 },
     { id: 'decimals', value: 1 },
     { id: 'custom.cellOptions', value: { mode: 'gradient', type: 'gauge', valueDisplayMode: 'text' } },
     { id: 'min', value: 0 },
@@ -113,7 +107,6 @@ local cpuTableOverrides = [
   ] },
   { matcher: { id: 'byName', options: 'Limit %' }, properties: [
     { id: 'unit', value: 'percentunit' },
-    { id: 'custom.width', value: 120 },
     { id: 'decimals', value: 1 },
     { id: 'custom.cellOptions', value: { mode: 'gradient', type: 'gauge', valueDisplayMode: 'text' } },
     { id: 'min', value: 0 },
@@ -132,7 +125,6 @@ local cpuTableOverrides = [
   ] },
   { matcher: { id: 'byName', options: 'Potential Savings' }, properties: [
     { id: 'unit', value: 'suffix:m' },
-    { id: 'custom.width', value: 130 },
     { id: 'decimals', value: 0 },
     { id: 'custom.cellOptions', value: { type: 'color-text' } },
     { id: 'thresholds', value: { mode: 'absolute', steps: [
@@ -146,34 +138,28 @@ local cpuTableOverrides = [
 
 // Table panel field overrides for Memory.
 local memoryTableOverrides = [
-  { matcher: { id: 'byName', options: 'Namespace' }, properties: [{ id: 'custom.width', value: 150 }] },
-  { matcher: { id: 'byName', options: 'Pod' }, properties: [{ id: 'custom.width', value: 300 }] },
   { matcher: { id: 'byName', options: 'Request' }, properties: [
     { id: 'unit', value: 'suffix:Mi' },
-    { id: 'custom.width', value: 100 },
     { id: 'decimals', value: 0 },
     { id: 'custom.cellOptions', value: { type: 'color-text' } },
     { id: 'color', value: { mode: 'fixed', fixedColor: 'text' } },
   ] },
   { matcher: { id: 'byName', options: 'Limit' }, properties: [
     { id: 'unit', value: 'suffix:Mi' },
-    { id: 'custom.width', value: 100 },
     { id: 'decimals', value: 0 },
     { id: 'custom.cellOptions', value: { type: 'color-text' } },
     { id: 'color', value: { mode: 'fixed', fixedColor: 'text' } },
   ] },
-  { matcher: { id: 'byName', options: 'Avg Usage' }, properties: [{ id: 'unit', value: 'suffix:Mi' }, { id: 'custom.width', value: 100 }, { id: 'decimals', value: 1 }] },
-  { matcher: { id: 'byName', options: 'P95 Usage' }, properties: [{ id: 'unit', value: 'suffix:Mi' }, { id: 'custom.width', value: 100 }, { id: 'decimals', value: 1 }] },
+  { matcher: { id: 'byName', options: 'Avg Usage' }, properties: [{ id: 'unit', value: 'suffix:Mi' }, { id: 'decimals', value: 1 }] },
+  { matcher: { id: 'byName', options: 'P95 Usage' }, properties: [{ id: 'unit', value: 'suffix:Mi' }, { id: 'decimals', value: 1 }] },
   { matcher: { id: 'byName', options: 'Recommended' }, properties: [
     { id: 'unit', value: 'suffix:Mi' },
-    { id: 'custom.width', value: 110 },
     { id: 'decimals', value: 0 },
     { id: 'custom.cellOptions', value: { type: 'color-text' } },
     { id: 'color', value: { mode: 'fixed', fixedColor: 'super-light-blue' } },
   ] },
   { matcher: { id: 'byName', options: 'Utilization' }, properties: [
     { id: 'unit', value: 'percentunit' },
-    { id: 'custom.width', value: 120 },
     { id: 'decimals', value: 1 },
     { id: 'custom.cellOptions', value: { mode: 'gradient', type: 'gauge', valueDisplayMode: 'text' } },
     { id: 'min', value: 0 },
@@ -189,7 +175,6 @@ local memoryTableOverrides = [
   ] },
   { matcher: { id: 'byName', options: 'Limit %' }, properties: [
     { id: 'unit', value: 'percentunit' },
-    { id: 'custom.width', value: 120 },
     { id: 'decimals', value: 1 },
     { id: 'custom.cellOptions', value: { mode: 'gradient', type: 'gauge', valueDisplayMode: 'text' } },
     { id: 'min', value: 0 },
@@ -208,7 +193,6 @@ local memoryTableOverrides = [
   ] },
   { matcher: { id: 'byName', options: 'Potential Savings' }, properties: [
     { id: 'unit', value: 'suffix:Mi' },
-    { id: 'custom.width', value: 130 },
     { id: 'decimals', value: 0 },
     { id: 'custom.cellOptions', value: { type: 'color-text' } },
     { id: 'thresholds', value: { mode: 'absolute', steps: [
@@ -244,31 +228,61 @@ local tableTransformations = [
     // Summary Stats
     statPanel(101,
               'CPU Under-utilized',
-              'count(avg_over_time((100 * sum(rate(container_cpu_usage_seconds_total{%s}[5m])) by (namespace,pod) / sum(kube_pod_container_resource_requests{%s}) by (namespace,pod))[$__range:]) < 30)' % [selector, requestSelector('cpu')],
+              '(count(avg_over_time((100 * sum(rate(container_cpu_usage_seconds_total{%s}[5m])) by (namespace,pod) / sum(kube_pod_container_resource_requests{%s}) by (namespace,pod))[$__range:]) < 30) or vector(0))' % [selector, requestSelector('cpu')],
               [{ color: 'green', value: null }, { color: 'yellow', value: 1 }, { color: 'orange', value: 5 }]),
     statPanel(102,
               'CPU Over-utilized',
-              'count(avg_over_time((100 * sum(rate(container_cpu_usage_seconds_total{%s}[5m])) by (namespace,pod) / sum(kube_pod_container_resource_requests{%s}) by (namespace,pod))[$__range:]) > 80)' % [selector, requestSelector('cpu')],
+              '(count(avg_over_time((100 * sum(rate(container_cpu_usage_seconds_total{%s}[5m])) by (namespace,pod) / sum(kube_pod_container_resource_requests{%s}) by (namespace,pod))[$__range:]) > 80) or vector(0))' % [selector, requestSelector('cpu')],
               [{ color: 'green', value: null }, { color: 'orange', value: 1 }, { color: 'red', value: 3 }]),
     statPanel(103,
               'Memory Under-utilized',
-              'count(avg_over_time((100 * sum(container_memory_working_set_bytes{%s}) by (namespace,pod) / sum(kube_pod_container_resource_requests{%s}) by (namespace,pod))[$__range:]) < 30)' % [selector, requestSelector('memory')],
+              '(count(avg_over_time((100 * sum(container_memory_working_set_bytes{%s}) by (namespace,pod) / sum(kube_pod_container_resource_requests{%s}) by (namespace,pod))[$__range:]) < 30) or vector(0))' % [selector, requestSelector('memory')],
               [{ color: 'green', value: null }, { color: 'yellow', value: 1 }, { color: 'orange', value: 5 }]),
     statPanel(104,
               'Memory Over-utilized',
-              'count(avg_over_time((100 * sum(container_memory_working_set_bytes{%s}) by (namespace,pod) / sum(kube_pod_container_resource_requests{%s}) by (namespace,pod))[$__range:]) > 80)' % [selector, requestSelector('memory')],
+              '(count(avg_over_time((100 * sum(container_memory_working_set_bytes{%s}) by (namespace,pod) / sum(kube_pod_container_resource_requests{%s}) by (namespace,pod))[$__range:]) > 80) or vector(0))' % [selector, requestSelector('memory')],
               [{ color: 'green', value: null }, { color: 'orange', value: 1 }, { color: 'red', value: 3 }]),
     statPanel(105,
               'CPU Near Limit',
-              'count(avg_over_time((100 * sum(rate(container_cpu_usage_seconds_total{%s}[5m])) by (namespace,pod) / sum(kube_pod_container_resource_limits{%s}) by (namespace,pod))[$__range:]) > 70)' % [selector, limitSelector('cpu')],
+              '(count(avg_over_time((100 * sum(rate(container_cpu_usage_seconds_total{%s}[5m])) by (namespace,pod) / sum(kube_pod_container_resource_limits{%s}) by (namespace,pod))[$__range:]) > 70) or vector(0))' % [selector, limitSelector('cpu')],
               [{ color: 'green', value: null }, { color: 'orange', value: 1 }, { color: 'red', value: 3 }]),
     statPanel(106,
               'Mem Near Limit',
-              'count(avg_over_time((100 * sum(container_memory_working_set_bytes{%s}) by (namespace,pod) / sum(kube_pod_container_resource_limits{%s}) by (namespace,pod))[$__range:]) > 70)' % [selector, limitSelector('memory')],
+              '(count(avg_over_time((100 * sum(container_memory_working_set_bytes{%s}) by (namespace,pod) / sum(kube_pod_container_resource_limits{%s}) by (namespace,pod))[$__range:]) > 70) or vector(0))' % [selector, limitSelector('memory')],
               [{ color: 'green', value: null }, { color: 'orange', value: 1 }, { color: 'red', value: 3 }]),
 
+    // OOMKilled Pods Stat
+    {
+      datasource: { type: 'prometheus', uid: '${datasource}' },
+      fieldConfig: {
+        defaults: {
+          color: { mode: 'thresholds' },
+          mappings: [],
+          thresholds: { mode: 'absolute', steps: [{ color: 'green', value: null }, { color: 'orange', value: 1 }, { color: 'red', value: 3 }] },
+          unit: 'none',
+        },
+      },
+      gridPos: { h: 4, w: 4, x: 0, y: 5 },
+      id: 107,
+      options: {
+        colorMode: 'value',
+        graphMode: 'none',
+        justifyMode: 'auto',
+        orientation: 'auto',
+        reduceOptions: { calcs: ['lastNotNull'], fields: '', values: false },
+        textMode: 'auto',
+      },
+      targets: [{
+        datasource: { type: 'prometheus', uid: '${datasource}' },
+        expr: 'count(changes(kube_pod_container_status_last_terminated_reason{%s,reason="OOMKilled"}[1h]) > 0) or vector(0)' % podSelector,
+        refId: 'A',
+      }],
+      title: 'OOMKilled (1h)',
+      type: 'stat',
+    },
+
     // Missing Requests Row
-    { collapsed: false, gridPos: { h: 1, w: 24, x: 0, y: 5 }, id: 150, title: 'Missing Resource Requests', type: 'row' },
+    { collapsed: false, gridPos: { h: 1, w: 24, x: 0, y: 9 }, id: 150, title: 'Missing Resource Requests', type: 'row' },
 
     // Missing Requests Table
     {
@@ -280,13 +294,9 @@ local tableTransformations = [
           mappings: [],
           thresholds: { mode: 'absolute', steps: [{ color: 'orange', value: null }] },
         },
-        overrides: [
-          { matcher: { id: 'byName', options: 'Namespace' }, properties: [{ id: 'custom.width', value: 150 }] },
-          { matcher: { id: 'byName', options: 'Pod' }, properties: [{ id: 'custom.width', value: 300 }] },
-          { matcher: { id: 'byName', options: 'Node' }, properties: [{ id: 'custom.width', value: 200 }] },
-        ],
+        overrides: [],
       },
-      gridPos: { h: 8, w: 24, x: 0, y: 6 },
+      gridPos: { h: 8, w: 24, x: 0, y: 10 },
       id: 151,
       options: { cellHeight: 'sm', footer: { countRows: true, fields: '', reducer: ['count'], show: true }, showHeader: true, sortBy: [{ desc: false, displayName: 'Namespace' }] },
       targets: [
@@ -310,14 +320,14 @@ local tableTransformations = [
     },
 
     // CPU Optimization Row
-    { collapsed: false, gridPos: { h: 1, w: 24, x: 0, y: 14 }, id: 200, title: 'CPU Optimization', type: 'row' },
+    { collapsed: false, gridPos: { h: 1, w: 24, x: 0, y: 18 }, id: 200, title: 'CPU Optimization', type: 'row' },
 
     // CPU Table
     {
       datasource: { type: 'prometheus', uid: '${datasource}' },
       description: 'Shows CPU resource optimization opportunities. Pods are sorted by utilization to help identify over-provisioned resources.',
       fieldConfig: { defaults: { custom: { align: 'auto', cellOptions: { type: 'auto' }, inspect: false, filterable: true }, mappings: [], thresholds: { mode: 'absolute', steps: [{ color: 'green', value: null }] } }, overrides: cpuTableOverrides },
-      gridPos: { h: 16, w: 24, x: 0, y: 15 },
+      gridPos: { h: 16, w: 24, x: 0, y: 19 },
       id: 201,
       options: { cellHeight: 'sm', footer: { countRows: false, fields: ['Request', 'Recommended', 'Potential Savings'], reducer: ['sum'], show: true }, showHeader: true, sortBy: [{ desc: false, displayName: 'Utilization' }] },
       targets: [
@@ -333,14 +343,14 @@ local tableTransformations = [
     },
 
     // Memory Optimization Row
-    { collapsed: false, gridPos: { h: 1, w: 24, x: 0, y: 31 }, id: 300, title: 'Memory Optimization', type: 'row' },
+    { collapsed: false, gridPos: { h: 1, w: 24, x: 0, y: 35 }, id: 300, title: 'Memory Optimization', type: 'row' },
 
     // Memory Table
     {
       datasource: { type: 'prometheus', uid: '${datasource}' },
       description: 'Shows Memory resource optimization opportunities. Pods are sorted by utilization to help identify over-provisioned resources.',
       fieldConfig: { defaults: { custom: { align: 'auto', cellOptions: { type: 'auto' }, inspect: false, filterable: true }, mappings: [], thresholds: { mode: 'absolute', steps: [{ color: 'green', value: null }] } }, overrides: memoryTableOverrides },
-      gridPos: { h: 16, w: 24, x: 0, y: 32 },
+      gridPos: { h: 16, w: 24, x: 0, y: 36 },
       id: 301,
       options: { cellHeight: 'sm', footer: { countRows: false, fields: ['Request', 'Recommended', 'Potential Savings'], reducer: ['sum'], show: true }, showHeader: true, sortBy: [{ desc: false, displayName: 'Utilization' }] },
       targets: [
@@ -358,15 +368,15 @@ local tableTransformations = [
     // Historical Trends Row (collapsed)
     {
       collapsed: true,
-      gridPos: { h: 1, w: 24, x: 0, y: 48 },
+      gridPos: { h: 1, w: 24, x: 0, y: 52 },
       id: 400,
       panels: [
         // CPU Utilization Over Time
         {
           datasource: { type: 'prometheus', uid: '${datasource}' },
           description: 'CPU utilization percentage over time. Values below 30% indicate potential over-provisioning.',
-          fieldConfig: { defaults: { color: { mode: 'palette-classic' }, custom: { drawStyle: 'line', fillOpacity: 10, lineWidth: 1, showPoints: 'never', spanNulls: true }, unit: 'percentunit', min: 0, decimals: 1 } },
-          gridPos: { h: 12, w: 24, x: 0, y: 49 },
+          fieldConfig: { defaults: { color: { mode: 'palette-classic' }, custom: { drawStyle: 'line', fillOpacity: 10, lineWidth: 1, showPoints: 'never', spanNulls: true, thresholdsStyle: { mode: 'line' } }, unit: 'percentunit', min: 0, decimals: 1, thresholds: { mode: 'absolute', steps: [{ color: 'green', value: null }, { color: 'yellow', value: 0.8 }, { color: 'red', value: 1.0 }] } } },
+          gridPos: { h: 12, w: 24, x: 0, y: 53 },
           id: 401,
           options: { legend: { calcs: ['mean', 'max'], displayMode: 'table', placement: 'right' }, tooltip: { mode: 'multi', sort: 'desc' } },
           targets: [{ datasource: { type: 'prometheus', uid: '${datasource}' }, expr: 'sum(rate(container_cpu_usage_seconds_total{%s}[5m])) by (namespace,pod) / sum(kube_pod_container_resource_requests{%s}) by (namespace,pod)' % [selector, requestSelector('cpu')], legendFormat: '{{namespace}}/{{pod}}', refId: 'A' }],
@@ -377,8 +387,8 @@ local tableTransformations = [
         {
           datasource: { type: 'prometheus', uid: '${datasource}' },
           description: 'Memory utilization percentage over time. Values below 30% indicate potential over-provisioning.',
-          fieldConfig: { defaults: { color: { mode: 'palette-classic' }, custom: { drawStyle: 'line', fillOpacity: 10, lineWidth: 1, showPoints: 'never', spanNulls: true }, unit: 'percentunit', min: 0, decimals: 1 } },
-          gridPos: { h: 12, w: 24, x: 0, y: 61 },
+          fieldConfig: { defaults: { color: { mode: 'palette-classic' }, custom: { drawStyle: 'line', fillOpacity: 10, lineWidth: 1, showPoints: 'never', spanNulls: true, thresholdsStyle: { mode: 'line' } }, unit: 'percentunit', min: 0, decimals: 1, thresholds: { mode: 'absolute', steps: [{ color: 'green', value: null }, { color: 'yellow', value: 0.8 }, { color: 'red', value: 1.0 }] } } },
+          gridPos: { h: 12, w: 24, x: 0, y: 65 },
           id: 402,
           options: { legend: { calcs: ['mean', 'max'], displayMode: 'table', placement: 'right' }, tooltip: { mode: 'multi', sort: 'desc' } },
           targets: [{ datasource: { type: 'prometheus', uid: '${datasource}' }, expr: 'sum(container_memory_working_set_bytes{%s}) by (namespace,pod) / sum(kube_pod_container_resource_requests{%s}) by (namespace,pod)' % [selector, requestSelector('memory')], legendFormat: '{{namespace}}/{{pod}}', refId: 'A' }],
@@ -390,11 +400,23 @@ local tableTransformations = [
           datasource: { type: 'prometheus', uid: '${datasource}' },
           description: 'Pod restarts in the last hour. Frequent restarts may indicate memory pressure or resource constraints.',
           fieldConfig: { defaults: { color: { mode: 'palette-classic' }, custom: { drawStyle: 'line', fillOpacity: 0, lineWidth: 1, showPoints: 'never' }, unit: 'none', decimals: 0 } },
-          gridPos: { h: 12, w: 24, x: 0, y: 73 },
+          gridPos: { h: 12, w: 24, x: 0, y: 77 },
           id: 403,
           options: { legend: { calcs: ['max'], displayMode: 'table', placement: 'right' }, tooltip: { mode: 'multi', sort: 'desc' } },
           targets: [{ datasource: { type: 'prometheus', uid: '${datasource}' }, expr: 'increase(kube_pod_container_status_restarts_total{%s}[1h]) > 0' % podSelector, legendFormat: '{{namespace}}/{{pod}}', refId: 'A' }],
           title: 'Pod Restarts (1h)',
+          type: 'timeseries',
+        },
+        // OOMKilled Pods
+        {
+          datasource: { type: 'prometheus', uid: '${datasource}' },
+          description: 'Pods terminated due to Out of Memory (OOMKilled). Indicates memory limits are too low.',
+          fieldConfig: { defaults: { color: { mode: 'palette-classic' }, custom: { drawStyle: 'points', fillOpacity: 0, lineWidth: 0, showPoints: 'always', pointSize: 8 }, unit: 'none', decimals: 0 } },
+          gridPos: { h: 12, w: 24, x: 0, y: 89 },
+          id: 404,
+          options: { legend: { calcs: ['max'], displayMode: 'table', placement: 'right' }, tooltip: { mode: 'multi', sort: 'desc' } },
+          targets: [{ datasource: { type: 'prometheus', uid: '${datasource}' }, expr: 'kube_pod_container_status_last_terminated_reason{%s,reason="OOMKilled"} > 0' % podSelector, legendFormat: '{{namespace}}/{{pod}}/{{container}}', refId: 'A' }],
+          title: 'OOMKilled Pods',
           type: 'timeseries',
         },
       ],
