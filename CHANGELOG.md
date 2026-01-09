@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.0](https://github.com/monkescience/gitops-mixin/compare/0.8.0...0.9.0) (2026-01-09)
+
+
+### Features
+
+* enhance pod optimization dashboard and alerts ([5f67674](https://github.com/monkescience/gitops-mixin/commit/5f6767401d287094ffb672e3838de2100970215e))
+
 ## [0.8.0](https://github.com/monkescience/gitops-mixin/compare/0.7.0...0.8.0) (2026-01-02)
 
 
