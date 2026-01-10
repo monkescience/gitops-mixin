@@ -12,6 +12,7 @@
     },
 
     nodeExporterMixinConfig: {
+      showMultiCluster: true,
       nodeExporterSelector: 'job="node-exporter"',
       diskDeviceSelector: 'device=~"(/dev/)?(mmcblk.p.+|nvme.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"',
     },
