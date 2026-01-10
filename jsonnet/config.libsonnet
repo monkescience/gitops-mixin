@@ -15,7 +15,9 @@
       diskDeviceSelector: 'device=~"(/dev/)?(mmcblk.p.+|nvme.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"',
     },
 
-    argoCdMixinConfig: {},
+    argoCdMixinConfig: {
+      showMultiCluster: true,
+    },
     lokiMixinConfig: {},
     alloyMixinConfig: {
       logsFilterSelector: 'job=~".+"',
