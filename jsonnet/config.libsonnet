@@ -1,6 +1,7 @@
 {
   _config+:: {
     kubernetesMixinConfig: {
+      showMultiCluster: true,
       cadvisorSelector: 'job="cadvisor"',
       kubeletSelector: 'job="kubelet"',
       kubeStateMetricsSelector: 'job="kube-state-metrics"',
