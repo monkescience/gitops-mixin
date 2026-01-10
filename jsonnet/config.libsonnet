@@ -17,7 +17,9 @@
 
     argoCdMixinConfig: {},
     lokiMixinConfig: {},
-    alloyMixinConfig: {},
+    alloyMixinConfig: {
+      logsFilterSelector: 'job=~".+"',
+    },
     mimirMixinConfig: {},
     tempoMixinConfig: {},
 
