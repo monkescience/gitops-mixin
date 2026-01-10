@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.10.0](https://github.com/monkescience/gitops-mixin/compare/0.9.0...0.10.0) (2026-01-10)
+
+
+### Features
+
+* **argocd:** enable multi-cluster support in dashboards ([62718d9](https://github.com/monkescience/gitops-mixin/commit/62718d979c3d6d8893a56cbc4daa6b63562cd071))
+* **kubernetes:** enable multi-cluster support in dashboards ([ee7ec36](https://github.com/monkescience/gitops-mixin/commit/ee7ec361d9cf512aa7cc9079090d716e3bb5d024))
+* **node-exporter:** enable multi-cluster support in dashboards ([d452638](https://github.com/monkescience/gitops-mixin/commit/d452638624aab36bf40afc09dc74ba2315ba835a))
+
+
+### Bug Fixes
+
+* **alloy:** add logsFilterSelector to fix Loki query error ([98ea3df](https://github.com/monkescience/gitops-mixin/commit/98ea3dfb2c8cff29771c46d410398164cba89d5a))
+
 ## [0.9.0](https://github.com/monkescience/gitops-mixin/compare/0.8.0...0.9.0) (2026-01-09)
 
 
